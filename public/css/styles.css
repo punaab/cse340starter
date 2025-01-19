@@ -161,7 +161,7 @@ h1, h2, h3, h4 {
 /* Gallery */
 .gallery {
   display: grid;
-  grid-template-columns: 1fr, 1fr; /* Two columns */
+  grid-template-columns: 1fr 1fr; /* Two columns */
   gap: 1rem;
   padding-left: .1rem;
   padding-right: .1rem;
