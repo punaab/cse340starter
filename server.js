@@ -20,6 +20,11 @@ app.use(expressLayouts)
 app.set("layout", "./layouts/layout") // not at views root
 
 /* ***********************
+ * Added Static MiddleWare (Israel's Way of Solving)
+ *************************/
+app.use(express.static("public"))
+
+/* ***********************
  * Index Route
  *************************/
 app.get("/", function(req, res){
