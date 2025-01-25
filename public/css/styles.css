@@ -171,6 +171,7 @@ h1, h2, h3, h4 {
 .gallery h2 {
   text-align: center;
   margin-top: 1rem;
+  grid-column: 1 / -1;
 }
 
 /* Caption Image */
@@ -251,6 +252,14 @@ ul.open {
   section#reviews {
     grid-column: 2/3;
     grid-row: 1/2;
+  }
+
+  section#reviews li {
+    margin-bottom: 1rem; /* Adjust the value as needed */
+  }
+
+  section#reviews h2 {
+    text-align: center;
   }
 
   section#upgrades {
