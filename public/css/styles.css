@@ -267,3 +267,38 @@ ul.open {
     grid-row: 1/2;
   }
 }
+
+/* ADDED VEHICLE DETAIL PAGE CSS */
+
+.vehicle-detail-page {
+  max-width: 1200px;
+  margin: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.vehicle-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.vehicle-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.vehicle-info {
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (max-width: 768px) {
+  .vehicle-detail-page {
+    grid-template-columns: 1fr;
+  }
+}
