@@ -1,5 +1,6 @@
-const invModel = require("../models/inventory-model")
-const Util = {}
+const invModel = require("../models/inventory-model");
+const invController = require('../controllers/invController'); 
+const Util = {};
 
 /* ************************
  * Constructs the nav HTML unordered list
@@ -22,9 +23,13 @@ Util.getNav = async function (req, res, next) {
   })
   list += "</ul>"
   return list
-}
+};
 
-module.exports = Util
+module.exports = Util;
+
+router.get("/type/:classificationId", invController.buildByClassificationId);
+
+module.exports = router;
 
 /* **************************************
 * Build the classification view HTML
@@ -57,23 +62,4 @@ Util.buildClassificationGrid = async function(data){
     grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>'
   }
   return grid
-}
-
-
-// exports.formatVehicleHTML = (vehicle) => {
-//     const priceFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(vehicle.price);
-//     const mileageFormatted = new Intl.NumberFormat('en-US').format(vehicle.mileage);
-  
-//     return `
-//       <div class="vehicle-details">
-//         <img src="${vehicle.image_url}" alt="${vehicle.make} ${vehicle.model}" class="vehicle-image" />
-//         <div class="vehicle-info">
-//           <h1>${vehicle.year} ${vehicle.make} ${vehicle.model}</h1>
-//           <p><strong>Price:</strong> ${priceFormatted}</p>
-//           <p><strong>Mileage:</strong> ${mileageFormatted} miles</p>
-//           <p><strong>Description:</strong> ${vehicle.description}</p>
-//         </div>
-//       </div>
-//     `;
-//   };
-  
+};
