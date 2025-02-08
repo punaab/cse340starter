@@ -1,5 +1,7 @@
+// const express = require('express'); // ADDED AFTER ISSUES
+// const router = express.Router(); // Initialize the router ADDED AFTER ISSUES
 const invModel = require("../models/inventory-model");
-const invController = require('../controllers/invController'); 
+// const invController = require('../controllers/invController'); 
 const Util = {};
 
 /* ************************
@@ -24,12 +26,6 @@ Util.getNav = async function (req, res, next) {
   list += "</ul>"
   return list
 };
-
-module.exports = Util;
-
-router.get("/type/:classificationId", invController.buildByClassificationId);
-
-module.exports = router;
 
 /* **************************************
 * Build the classification view HTML
@@ -62,4 +58,6 @@ Util.buildClassificationGrid = async function(data){
     grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>'
   }
   return grid
-};
+}
+
+module.exports = Util;
