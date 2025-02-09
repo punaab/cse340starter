@@ -8,11 +8,11 @@ const Util = {}
  * Constructs the nav HTML unordered list
  ************************** */
 Util.getNav = async function (req, res, next) {
-  let data = await invModel.getClassifications()
-  let list = "<ul>"
-  list += '<li><a href="/" title="Home page">Home</a></li>'
+  let data = await invModel.getClassifications();
+  let list = "<ul>";
+  list += '<li><a href="/" title="Home page">Home</a></li>';
   data.rows.forEach((row) => {
-    list += "<li>"
+    list += "<li>";
     list +=
       '<a href="/inv/type/' +
       row.classification_id +
@@ -20,12 +20,12 @@ Util.getNav = async function (req, res, next) {
       row.classification_name +
       ' vehicles">' +
       row.classification_name +
-      "</a>"
-    list += "</li>"
-  })
-  list += "</ul>"
-  return list
-}
+      "</a>";
+    list += "</li>";
+  });
+  list += "</ul>";
+  return list;
+};
 
 /* **************************************
 * Build the classification view HTML
@@ -60,4 +60,43 @@ Util.buildClassificationGrid = async function(data){
   return grid
 }
 
-module.exports = Util;
+/* **************************************
+* Build the single view HTML
+* ************************************ */
+
+Util.buildSingleView = async function(data){
+  let view = '';
+      view += '<div class="car-container">';
+      view += '<img src="' + data.inv_thumbnail + '" alt="Image of' + data.inv_make + ' ' + data.inv_model + '" />';
+      view += '<ul class="car-details">';
+      view += '<li><h2 class="price">price">Price: $' + Intl.NumberFormat.format(data.inv_price) + '</li>';
+      view += '<li class="description"><b>Description</b>: ' + data.inv_description + '</li>';
+      view += '<li class="color"><b>Color</b>: ' + data.inv_color + '</li>';
+      view += '<li class="miles"><b>Mileage</b>: ' + Intl.NumberFormat('en-US') + 'miles</li>';
+      view += '</ui>';
+      view += '</div>';
+
+  return view  
+}
+
+
+/* **************************************
+* HANDLE ERRORS
+* ************************************ */
+// utilities/index.js
+function handleErrors(fn) {
+  return function (req, res, next) {
+    try {
+      return fn(req, res, next);
+    } catch (error) {
+      next(error); // Pass the error to the next middleware (error handler)
+    }
+  };
+}
+
+module.exports = {
+  getNav: Util.getNav,
+  buildClassificationGrid: Util.buildClassificationGrid,
+  buildSingleView: Util.buildSingleView,
+  handleErrors
+};

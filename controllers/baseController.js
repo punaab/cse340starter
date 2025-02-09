@@ -1,12 +1,13 @@
-const utilities = require("../utilities/index.js");
+const utilities = require('../utilities');
+// const { Util } = require('../utilities'); // Import 'Util' from utilities
 const baseController = {};
 
 baseController.buildHome = async function(req, res){
-  const nav = await utilities.getNav()
-  res.render("index", {title: "Home", nav})
+  const nav = await utilities.getNav(); // Correctly use 'Util' to call getNav()
+  res.render("index", { title: "Home", nav });
 };
 
-module.exports = baseController
+module.exports = baseController;
 
 
 
