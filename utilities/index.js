@@ -1,8 +1,8 @@
 // const express = require('express'); // ADDED AFTER ISSUES
 // const router = express.Router(); // Initialize the router ADDED AFTER ISSUES
-const invModel = require("../models/inventory-model");
+const invModel = require("../models/inventory-model")
 // const invController = require('../controllers/invController'); 
-const Util = {};
+const Util = {}
 
 /* ************************
  * Constructs the nav HTML unordered list
@@ -25,7 +25,7 @@ Util.getNav = async function (req, res, next) {
   })
   list += "</ul>"
   return list
-};
+}
 
 /* **************************************
 * Build the classification view HTML
