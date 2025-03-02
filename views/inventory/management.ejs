@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Inventory Management</h1>
+  </header>
+
+  <!-- Display a flash message if one exists -->
+  <% if (flash && flash.length) { %>
+    <div class="flash-message">
+      <% flash.forEach(function(message){ %>
+        <p><%= message %></p>
+      <% }); %>
+    </div>
+  <% } %>
+
+  <!-- Links to trigger processes via MVC -->
+  <nav>
+    <ul class="button-blue">
+      <li><a href="/inv/add-classification" class="button-blue">Add New Classification</a></li>
+      <li><a href="/inv/new-inventory" class="button-blue">Add New Inventory Item</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <p>Use the links above to manage classifications and inventory items.</p>
+  </main>
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Add New Classification</h1>
+  </header>
+
+  <main>
+    <!-- Flash Messages (Styled) -->
+    <% if (flash && flash.length) { %>
+      <div class="flash-message">
+        <% flash.forEach(function(message) { %>
+          <p><%= message %></p>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <!-- Error Messages -->
+    <% if (errors && errors.length) { %>
+      <div class="error-messages">
+        <ul>
+          <% errors.forEach(function(error) { %>
+            <li><%= error %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <!-- Classification Form -->
+    <form method="POST" action="/inv/add-classification" onsubmit="return validateForm()">
+      <label for="classificationName">Classification Name:</label>
+      <input 
+        type="text" 
+        name="classification_name" 
+        id="classificationName" 
+        required 
+        pattern="[A-Za-z0-9]+" 
+        title="Only letters and numbers are allowed."
+        oninput="clearErrorMessage()">
+      <p id="error-message" class="error-text"></p> <!-- Dynamic Error Message -->
+
+      <button type="submit" id="submit-btn">Add Classification</button>
+    </form>
+  </main>
+
+  <!-- Client-Side Validation Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const inputField = document.getElementById("classificationName");
+      const submitButton = document.getElementById("submit-btn");
+      const errorMessage = document.getElementById("error-message");
+      const regex = /^[A-Za-z0-9]+$/;
+  
+      function validateInput() {
+        const value = inputField.value.trim();
+        
+        if (!regex.test(value)) {
+          errorMessage.textContent = "Classification name must contain only letters and numbers (no spaces or special characters).";
+          inputField.classList.add("invalid");
+          inputField.classList.remove("valid");
+          submitButton.disabled = true;
+        } else {
+          errorMessage.textContent = "";
+          inputField.classList.remove("invalid");
+          inputField.classList.add("valid");
+          submitButton.disabled = false;
+        }
+      }
+  
+      function handleSubmit(event) {
+        if (!regex.test(inputField.value.trim())) {
+          event.preventDefault(); // Prevent form submission if invalid
+          validateInput();
+        } else {
+          submitButton.disabled = true; // Prevent multiple clicks
+        }
+      }
+  
+      // Add event listeners
+      inputField.addEventListener("input", validateInput);
+      inputField.addEventListener("focus", () => errorMessage.textContent = "");
+      document.getElementById("classificationForm").addEventListener("submit", handleSubmit);
+    });
+  </script>
+  
+</body>
+</html>
+
+
+

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script>
+    function validateForm() {
+      let price = document.getElementById('inv_price').value;
+      let miles = document.getElementById('inv_miles').value;
+
+      if (price <= 0 || miles < 0) {
+        alert("Price must be positive and miles cannot be negative.");
+        return false;
+      }
+      return true;
+    }
+  </script>
+</head>
+<body>
+  <main>
+    <div class="inventory-form">
+      <h2>Enter Vehicle Details</h2>
+
+      <!-- ✅ Flash Messages -->
+      <% if (flash && flash.length) { %>
+        <div class="flash-message">
+          <% flash.forEach(function(message) { %>
+            <p><%= message %></p>
+          <% }); %>
+        </div>
+      <% } %>
+
+      <!-- ✅ Error Messages -->
+      <% if (errors && errors.length) { %>
+        <div class="error-messages">
+          <ul>
+            <% errors.forEach(function(error) { %>
+              <li><%= error %></li>
+            <% }); %>
+          </ul>
+        </div>
+      <% } %>
+
+      <!-- ✅ Inventory Form -->
+      <form method="POST" action="/inv/new-inventory" onsubmit="return validateForm()">
+        
+        <!-- Classification Selection -->
+        <div class="form-group">
+          <label for="classification_id">Classification:</label>
+          <%- classificationList %>
+        </div>
+
+
+        <!-- Vehicle Make -->
+        <div class="form-group">
+          <label for="inv_make">Make:</label>
+          <input type="text" name="inv_make" id="inv_make" required value="<%= inv_make || '' %>">
+        </div>
+
+        <!-- Vehicle Model -->
+        <div class="form-group">
+          <label for="inv_model">Model:</label>
+          <input type="text" name="inv_model" id="inv_model" required value="<%= inv_model || '' %>">
+        </div>
+
+        <!-- Vehicle Description -->
+        <div class="form-group">
+          <label for="inv_description">Description:</label>
+          <textarea name="inv_description" id="inv_description" rows="4" placeholder="Enter vehicle description here..." required><%= inv_description || '' %></textarea>
+        </div>
+
+        <!-- Vehicle Year -->
+        <div class="form-group">
+          <label for="inv_year">Year:</label>
+          <input type="number" name="inv_year" id="inv_year" required value="<%= inv_year || '' %>">
+        </div>
+
+        <!-- Vehicle Price -->
+        <div class="form-group">
+          <label for="inv_price">Price:</label>
+          <input type="number" step="0.01" name="inv_price" id="inv_price" required value="<%= inv_price || '' %>">
+        </div>
+
+        <!-- Vehicle Miles -->
+        <div class="form-group">
+          <label for="inv_miles">Miles:</label>
+          <input type="number" name="inv_miles" id="inv_miles" required value="<%= inv_miles || '' %>">
+        </div>
+
+        <!-- Vehicle Color -->
+        <div class="form-group">
+          <label for="inv_color">Color:</label>
+          <input type="text" name="inv_color" id="inv_color" required value="<%= inv_color || '' %>">
+        </div>
+
+        <!-- Vehicle Image Path -->
+        <div class="form-group">
+          <label for="inv_image">Image Path:</label>
+          <input type="text" name="inv_image" id="inv_image" required value="<%= inv_image || '/images/no-image-available.png' %>">
+        </div>
+
+        <!-- Vehicle Thumbnail Path -->
+        <div class="form-group">
+          <label for="inv_thumbnail">Thumbnail Path:</label>
+          <input type="text" name="inv_thumbnail" id="inv_thumbnail" required value="<%= inv_thumbnail || '/images/no-image-available_thumb.png' %>">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit">Add Vehicle</button>
+      </form>
+      
+    </div>
+  </main>
+</body>
+</html>
+

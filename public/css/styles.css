@@ -7,6 +7,7 @@
   --decorative-font: "Georgia", serif;
   --body-font: "Arial", Helvetica, sans-serif;
   --nav-font: "Arial", Helvetica, sans-serif; font-weight: bold;
+  --font-weight-bold: bold;
 }
 
 /******* Change Box Model ***************/
@@ -27,6 +28,7 @@ body {
   background-repeat: repeat-y;
   margin: 0;
   font-family: var(--body-font);
+  font-weight: var(--font-weight-bold); 
   border-radius: 0;
   border-width: 0;
   transition: padding 1s;
@@ -51,11 +53,6 @@ nav a {
   color: white;        /* Make text color white */
   font-weight: bold;   /* Make text bold */
   text-decoration: underline; /* Optional: remove underline from links */
-}
-
-nav ul {
-  display: flex;
-  flex-wrap: wrap;
 }
 
 main {
@@ -83,6 +80,22 @@ nav ul {
 
 h1, h2, h3, h4 {
   font-family: var(--decorative-font);
+  margin-bottom: 10px; /* Reduce space below headings */
+  margin-top: 10px; /* Reduce space above headings */
+}
+
+/* Reduce margin between section titles */
+.section-title {
+  margin-bottom: 5px;
+}
+
+#upgrades a {
+  color: white;
+  text-decoration: none; /* Optional: removes underline */
+}
+
+#upgrades a:hover {
+  color: lightgray; /* Optional: adds hover effect */
 }
 
 #wrapper {
@@ -272,10 +285,10 @@ ul.open {
 
 .vehicle-detail-page {
   max-width: 1200px;
-  margin: 20px;
+  margin: 10px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 10px;
   align-items: start;
 }
 
@@ -301,4 +314,418 @@ ul.open {
   .vehicle-detail-page {
     grid-template-columns: 1fr;
   }
+}
+
+/* LOGIN VIEW CSS */
+
+/* Login container */
+.login-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: var(--primary-bg); /* Light background color from your theme */
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Heading Style */
+.login-container h1 {
+  font-family: var(--decorative-font);
+  color: var(--primary-fg); /* Main theme color for the heading */
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Form label style */
+.login-container label {
+  display: block;
+  text-align: left;
+  color: rgb(6, 18, 44);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Input field styling */
+.login-container input {
+  width: 100%;
+  padding: 0.8rem;
+  margin: 0.5rem 0;
+  border: 1px solid var(--secondary-bg); /* Secondary theme color for borders */
+  border-radius: 5px;
+  font-size: 1rem;
+  font-family: var(--body-font);
+  color: var(--secondary-fg);
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+.login-container input:focus {
+  border-color: var(--pop); /* Pop color on focus */
+  outline: none;
+}
+
+/* Button styling */
+.login-container button {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: var(--primary-fg); /* Use primary color for button */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-container button:hover {
+  background-color: var(--pop); /* Change on hover for emphasis */
+}
+
+/* Link to registration page */
+.login-container p {
+  font-size: 1rem;
+  margin-top: 1.5rem;
+}
+
+.login-container a {
+  color: var(--primary-fg);
+  text-decoration: none;
+  font-weight: var(--font-weight-bold);
+}
+
+.login-container a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive styling */
+@media screen and (max-width: 500px) {
+  .login-container {
+    padding: 1.5rem;
+    width: 90%;
+  }
+}
+
+/* Registration Form Box */
+.registration-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 2rem;
+  background-color: var(--primary-bg);
+  color: var(--primary-fg);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.registration-container h1 {
+  text-align: center;
+  color: var(--pop);
+  margin-bottom: 1rem;
+}
+
+.registration-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.registration-container label {
+  font-weight: bold;
+  color: var(--primary-fg);
+}
+
+.registration-container input {
+  padding: 0.8rem;
+  border-radius: 4px;
+  border: 1px solid var(--secondary-bg);
+  font-size: 1rem;
+  width: 100%;
+}
+
+.registration-container input:focus {
+  border-color: var(--pop);
+  outline: none;
+}
+
+.registration-container button {
+  padding: 1rem;
+  background-color: var(--pop);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.registration-container button:hover {
+  background-color: darkblue; /* Darker blue for hover effect */
+}
+
+.registration-container p {
+  text-align: center;
+  font-size: 1rem;
+}
+
+.registration-container a {
+  color: var(--pop);
+  text-decoration: none;
+}
+
+.registration-container a:hover {
+  text-decoration: underline;
+}
+
+input:required:invalid, input:focus:invalid {
+  background-image: url(/images/invalid.png);
+  background-position: right top;
+  background-repeat: no-repeat;
+ }
+  input:required:valid {
+  background-image: url(/images/valid.png);
+  background-position: right top;
+  background-repeat: no-repeat;
+  }
+
+
+/* ==========================
+   Inventory Form Styling
+   ========================== */
+
+   form {
+    max-width: 650px;
+    margin: 20px auto;
+    padding: 15px;
+    background: var(--secondary-bg); /* Dark background for contrast */
+    border-radius: 10px;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+    margin-top: 10px; /* Reduce space above the form */
+    padding: 10px;
+}
+
+/* Form Groups */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px; /* Adds space between input fields */
+}
+
+/* Labels */
+label {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--secondary-fg); /* Light text color */
+    margin-bottom: 6px;
+}
+
+/* Input Fields */
+input, select {
+    font-size: 1rem;
+    padding: 12px;
+    border: 1px solid var(--primary-fg);
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.3s ease;
+    background-color: var(--primary-bg); /* Light background */
+    color: var(--primary-fg); /* Dark text for readability */
+}
+
+/* Dropdown Styling */
+/* ==========================
+   Dropdown Styling with Arrow
+   ========================== */
+select {
+    appearance: none; /* Removes default browser styling */
+    background-color: var(--primary-bg);
+    padding: 12px;
+    cursor: pointer;
+    border: 1px solid var(--primary-fg);
+    border-radius: 5px;
+    font-size: 1rem;
+    color: var(--primary-fg);
+    font-weight: bold;
+    width: 100%;
+    outline: none;
+    position: relative;
+    
+    /* Background Image for the Arrow */
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'><path fill='rgb(62, 59, 235)' d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+}
+
+/* Hover & Focus Effects */
+select:hover, select:focus {
+    border-color: var(--pop);
+    box-shadow: 0 0 8px var(--pop);
+}
+
+/* Prevent unnecessary top margin for first element inside form */
+form > *:first-child {
+  margin-top: 0;
+}
+
+/* Make Dropdown Arrow Visible in Edge & Firefox */
+select::-ms-expand {
+    display: none; /* Hides the default arrow in IE and Edge */
+}
+
+
+/* Submit Button */
+button {
+    background: var(--primary-fg);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background: var(--pop);
+    transform: translateY(-2px);
+}
+
+/* ==========================
+   Responsive Design
+   ========================== */
+
+@media (max-width: 768px) {
+    form {
+        max-width: 90%;
+        padding: 20px;
+    }
+
+    input, select, button {
+        font-size: 0.9rem;
+    }
+}
+
+/* ==========================
+   Vehicle Details Page Styling
+   ========================== */
+
+   .vehicle-detail-page {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: var(--secondary-bg); /* Dark background */
+    color: var(--primary-fg); /* Darker text */
+    border-radius: 10px;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  /* Vehicle Image */
+  .vehicle-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
+    margin-bottom: 15px;
+  }
+  
+  /* Vehicle Details */
+  .vehicle-details h2 {
+    font-size: 2rem;
+    font-family: var(--decorative-font);
+    color: var(--primary-fg);
+    margin-bottom: 5px;
+  }
+  
+  .vehicle-details p {
+    font-size: 1.1rem;
+    margin: 5px 0;
+    color: var(--primary-fg); /* ✅ Change to dark text */
+  }
+  
+  /* Make strong text pop */
+  .vehicle-details p strong {
+    color: var(--pop); /* Slightly different for emphasis */
+  }
+  
+  /* Add spacing for better readability */
+  .vehicle-details {
+    padding: 15px;
+    background: var(--primary-bg);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Price Styling */
+  .vehicle-details p:nth-child(3) {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--pop);
+    margin-top: 10px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .vehicle-detail-page {
+      width: 95%;
+      padding: 10px;
+    }
+  
+    .vehicle-details {
+      width: 100%;
+      padding: 10px;
+    }
+  
+    .vehicle-details h2 {
+      font-size: 1.8rem;
+    }
+  
+    .vehicle-details p {
+      font-size: 1rem;
+    }
+  }
+
+/* Style for Description Box */
+textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid var(--primary-fg);
+  border-radius: 5px;
+  background-color: var(--primary-bg);
+  color: var(--primary-fg);
+  resize: vertical; /* Allows resizing vertically */
+  min-height: 80px;
+}
+
+/* Default input style */
+input {
+  border: 2px solid var(--primary-fg);
+  transition: border-color 0.3s ease;
+}
+
+/* Invalid input (red border) */
+input.invalid {
+  border-color: red;
+}
+
+/* Valid input (green border) */
+input.valid {
+  border-color: green;
+}
+
+/* Error message styling */
+#error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 5px;
 }
