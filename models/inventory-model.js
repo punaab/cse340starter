@@ -3,9 +3,6 @@ const pool = require("../database/");
 /* ***************************
  *  Get all classification data
  * ************************** */
-/* ***************************
- *  Get all classification data
- * ************************** */
 async function getClassifications() {
   try {
     console.log("[getClassifications] Querying database...");
@@ -55,15 +52,16 @@ async function getInventoryByClassificationId(classification_id) {
 async function getSingleByInventoryID(inv_id) {
   try {
     const data = await pool.query(
-      `SELECT * FROM public.inventory WHERE inv_id = $1`,
+      `SELECT * FROM public.inventory WHERE inv_id = $1`, // Fetch full vehicle details
       [inv_id]
     );
-    return data.rows[0];
+    return data.rows[0]; // ✅ Returns single vehicle object
   } catch (error) {
     console.error("[getSingleByInventoryID] Error:", error);
     return null;
   }
 }
+
 
 /* ***************************
  *  Add new classification
@@ -125,18 +123,3 @@ module.exports = {
   addInventory // ✅ Ensure this function is exported
 };
 
-
-
-
-// const db = require('../db'); // Get the database connection
-
-// exports.getVehicleById = async (inventoryId) => {
-//   try {
-//     const query = 'SELECT * FROM inventory WHERE id = ?';
-//     const [rows] = await db.execute(query, [inventoryId]);
-//     return rows[0];
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// };

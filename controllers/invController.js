@@ -37,27 +37,30 @@ invCont.buildByClassificationId = async function (req, res, next) {
 // ***********************
 // Display Single Inventory Item
 // ***********************
+// Display Single Inventory Item
 invCont.buildByInventoryId = async function (req, res, next) {
   try {
-    const inv_id = req.params.inventoryId;
-    const vehicle = await invModel.getSingleByInventoryID(inv_id);
-    let nav = await utilities.getNav();
+    const inv_id = req.params.inventoryId; // Get vehicle ID from URL
+    const data = await invModel.getSingleByInventoryID(inv_id); // Fetch vehicle details
 
-    if (!vehicle) {
+    let nav = await utilities.getNav(); // Get Navigation
+
+    if (!data) {
       req.flash("notice", "Vehicle details not found.");
       return res.redirect("/inv/");
     }
 
     res.render("inventory/single", {
-      title: `${vehicle.inv_make} ${vehicle.inv_model}`,
+      title: `${data.inv_make} ${data.inv_model}`, // Page Title
       nav,
-      vehicle
+      vehicle: data, // Send vehicle data to the view, including inv_image
     });
   } catch (error) {
     console.error("[buildByInventoryId] Error:", error);
     next(error);
   }
 };
+
 
 
 // ***********************
@@ -135,10 +138,6 @@ invCont.addClassification = async function (req, res, next) {
   }
 };
 
-
-// ***********************
-// Add New Inventory Page
-// ***********************
 // ***********************
 // Add New Inventory Page
 // ***********************
@@ -160,8 +159,8 @@ invCont.buildNewInventory = async function (req, res, next) {
       inv_price: "",
       inv_miles: "",
       inv_color: "",
-      inv_image: "/images/no-image.png",
-      inv_thumbnail: "/images/no-image-tn.png",
+      inv_image: "/images/vehicles/no-image.png",
+      inv_thumbnail: "/images/vehicles/no-image-tn.png",
     });
   } catch (error) {
     console.error("[buildNewInventory] Error:", error);

@@ -13,6 +13,7 @@ const dotenv = require("dotenv").config();
 const session = require("express-session");
 const flash = require("connect-flash");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser")
 const utilities = require("./utilities");
 const validation = require("./middleware/validation");
 
@@ -63,6 +64,11 @@ app.use(function (req, res, next) {
  *************************/
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); // Parses `application/x-www-form-urlencoded` data
+
+/* ***********************
+ * Cookie Middleware
+ *************************/
+app.use(cookieParser())
 
 /* ***********************
  * View Engine Setup
