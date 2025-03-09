@@ -28,11 +28,24 @@
   </nav>
 
   <main>
-    <p>Use the links above to manage classifications and inventory items.</p>
+    <h2>Manage Inventory</h2>
+    <p>Select a classification from the list to see the items belonging to the classification.</p>
+    
+    <!-- EJS code block to display classification list -->
+    <%- classificationList %>
+
+    <!-- Empty table for inventory display -->
+    <table id="inventoryDisplay"></table>
+
+    <!-- Noscript message -->
+    <noscript>JavaScript must be enabled to use this page.</noscript>
   </main>
+
+
+  <!-- Link to JavaScript file (to be created) -->
+  <script src="/js/inventory.js"></script>
 </body>
 </html>
-
 
 
 

@@ -6,25 +6,19 @@ const pool = require("../database/");
 async function getClassifications() {
   try {
     console.log("[getClassifications] Querying database...");
-    
     const result = await pool.query("SELECT classification_id, classification_name FROM public.classification ORDER BY classification_name");
-
-    console.log("[getClassifications] Raw DB Result:", result); // Debugging log
-
+    console.log("[getClassifications] Raw DB Result:", result);
     if (!result || !result.rows || result.rows.length === 0) {
       console.warn("[getClassifications] No classifications found.");
-      return []; // ✅ Return an empty array if no results
+      return [];
     }
-
-    console.log("[getClassifications] Data Retrieved:", result.rows); // Debugging log
-    return result.rows; // ✅ Always return an array
-
+    console.log("[getClassifications] Data Retrieved:", result.rows);
+    return result.rows;
   } catch (error) {
     console.error("[getClassifications] Database error:", error);
-    return []; // ✅ Ensure it returns an array even on error
+    return [];
   }
 }
-
 
 
 /* ***************************
@@ -32,17 +26,19 @@ async function getClassifications() {
  * ************************** */
 async function getInventoryByClassificationId(classification_id) {
   try {
+    console.log(`[getInventoryByClassificationId] Querying for: ${classification_id}`);
     const data = await pool.query(
       `SELECT * FROM public.inventory AS i 
-      JOIN public.classification AS c 
-      ON i.classification_id = c.classification_id 
-      WHERE i.classification_id = $1`,
+       JOIN public.classification AS c 
+       ON i.classification_id = c.classification_id 
+       WHERE i.classification_id = $1`,
       [classification_id]
     );
+    console.log(`[getInventoryByClassificationId] Result:`, data.rows);
     return data.rows;
   } catch (error) {
     console.error("[getInventoryByClassificationId] Error:", error);
-    return null;
+    return [];
   }
 }
 
@@ -120,6 +116,6 @@ module.exports = {
   getInventoryByClassificationId,
   getSingleByInventoryID,
   addClassification,
-  addInventory // ✅ Ensure this function is exported
+  addInventory
 };
 

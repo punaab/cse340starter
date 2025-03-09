@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <main>
+    <h1><%= title %></h1>
+
+    <!-- Flash Messages -->
+    <% if (messages && messages.notice) { %>
+      <div class="flash-message">
+        <p><%= messages.notice %></p>
+      </div>
+    <% } %>
+
+    <!-- Errors -->
+    <% if (errors) { %>
+      <ul class="errors">
+        <% errors.forEach(error => { %>
+          <li><%= error.msg %></li>
+        <% }); %>
+      </ul>
+    <% } %>
+
+    <!-- Main Content -->
+    <p>You're logged in</p>
+  </main>
+</body>
+</html>

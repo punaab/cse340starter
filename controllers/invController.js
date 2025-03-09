@@ -37,13 +37,12 @@ invCont.buildByClassificationId = async function (req, res, next) {
 // ***********************
 // Display Single Inventory Item
 // ***********************
-// Display Single Inventory Item
 invCont.buildByInventoryId = async function (req, res, next) {
   try {
-    const inv_id = req.params.inventoryId; // Get vehicle ID from URL
-    const data = await invModel.getSingleByInventoryID(inv_id); // Fetch vehicle details
+    const inv_id = req.params.inventoryId;
+    const data = await invModel.getSingleByInventoryID(inv_id);
 
-    let nav = await utilities.getNav(); // Get Navigation
+    let nav = await utilities.getNav();
 
     if (!data) {
       req.flash("notice", "Vehicle details not found.");
@@ -51,9 +50,9 @@ invCont.buildByInventoryId = async function (req, res, next) {
     }
 
     res.render("inventory/single", {
-      title: `${data.inv_make} ${data.inv_model}`, // Page Title
+      title: `${data.inv_make} ${data.inv_model}`,
       nav,
-      vehicle: data, // Send vehicle data to the view, including inv_image
+      vehicle: data,
     });
   } catch (error) {
     console.error("[buildByInventoryId] Error:", error);
@@ -61,21 +60,40 @@ invCont.buildByInventoryId = async function (req, res, next) {
   }
 };
 
-
-
 // ***********************
 // Inventory Management Page
 // ***********************
 invCont.buildManagement = async function (req, res, next) {
   try {
     let nav = await utilities.getNav();
+    const classificationList = await utilities.buildClassificationList();
+    console.log("[buildManagement] classificationList:", classificationList); // Add this
     res.render("inventory/management", {
       title: "Inventory Management",
       nav,
       flash: req.flash("notice"),
+      classificationList,
     });
   } catch (error) {
     console.error("[buildManagement] Error:", error);
+    next(error);
+  }
+};
+
+// ***********************
+// Get Inventory by Classification ID (for AJAX)
+// ***********************
+invCont.getInventoryByClassificationId = async function (req, res, next) {
+  try {
+    const classificationId = req.params.classificationId;
+    const data = await invModel.getInventoryByClassificationId(classificationId);
+    if (data && data.length > 0) {
+      res.json(data); // Return inventory data as JSON
+    } else {
+      res.json([]); // Return empty array if no data
+    }
+  } catch (error) {
+    console.error("[getInventoryByClassificationId] Error:", error);
     next(error);
   }
 };
@@ -107,22 +125,20 @@ invCont.addClassification = async function (req, res, next) {
     const { classification_name } = req.body;
     let errors = [];
 
-    // ✅ Validate input: No spaces, special characters, and should be unique
     if (!classification_name || !/^[A-Za-z0-9]+$/.test(classification_name.trim())) {
       errors.push("Classification name must contain only letters and numbers (no spaces or special characters).");
     }
 
     if (errors.length > 0) {
-      req.flash("error", errors[0]); // Flash first error message
+      req.flash("error", errors[0]);
       return res.status(400).render("inventory/add-classification", {
         title: "Add New Classification",
         nav,
-        flash: req.flash(), // Ensure flash messages are properly retrieved
+        flash: req.flash(),
         errors,
       });
     }
 
-    // Insert into database
     const result = await invModel.addClassification(classification_name);
     if (result.success) {
       req.flash("success", "New classification added successfully.");
@@ -154,7 +170,7 @@ invCont.buildNewInventory = async function (req, res, next) {
       errors: null,
       inv_make: "",
       inv_model: "",
-      inv_description: "", 
+      inv_description: "",
       inv_year: "",
       inv_price: "",
       inv_miles: "",
@@ -168,8 +184,6 @@ invCont.buildNewInventory = async function (req, res, next) {
   }
 };
 
-
-
 // ***********************
 // Process Adding a New Inventory Item
 // ***********************
@@ -177,16 +191,31 @@ invCont.addNewInventory = async function (req, res, next) {
   try {
     let nav = await utilities.getNav();
     let classificationList = await utilities.buildClassificationList();
-    const { 
-      inv_make, inv_model, inv_year, inv_price, inv_miles, 
-      inv_color, inv_image, inv_thumbnail, classification_id, inv_description
+    const {
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_price,
+      inv_miles,
+      inv_color,
+      inv_image,
+      inv_thumbnail,
+      classification_id,
+      inv_description,
     } = req.body;
-    
+
     let errors = [];
 
-    // ✅ Validate required fields
-    if (!inv_make || !inv_model || !inv_year || !inv_price || 
-        !inv_miles || !inv_color || !classification_id || !inv_description) {
+    if (
+      !inv_make ||
+      !inv_model ||
+      !inv_year ||
+      !inv_price ||
+      !inv_miles ||
+      !inv_color ||
+      !classification_id ||
+      !inv_description
+    ) {
       errors.push("All fields, including description, are required.");
     }
 
@@ -209,10 +238,17 @@ invCont.addNewInventory = async function (req, res, next) {
       });
     }
 
-    // ✅ Insert into database
     const result = await invModel.addInventory(
-      inv_make, inv_model, inv_year, inv_price, inv_miles, 
-      inv_color, inv_image, inv_thumbnail, classification_id, inv_description
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_price,
+      inv_miles,
+      inv_color,
+      inv_image,
+      inv_thumbnail,
+      classification_id,
+      inv_description
     );
 
     if (result.success) {
@@ -234,7 +270,7 @@ invCont.addNewInventory = async function (req, res, next) {
         inv_color,
         inv_image,
         inv_thumbnail,
-        inv_description
+        inv_description,
       });
     }
   } catch (error) {
@@ -243,10 +279,5 @@ invCont.addNewInventory = async function (req, res, next) {
   }
 };
 
-
-
-
-
 module.exports = invCont;
-
 

@@ -3,6 +3,8 @@
 const invModel = require("../models/inventory-model")
 // const invController = require('../controllers/invController'); 
 const Util = {}
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
 
 /* ************************
  * Constructs the nav HTML unordered list
@@ -79,35 +81,27 @@ Util.buildClassificationGrid = async function(data) {
  * ************************************ */
 Util.buildClassificationList = async function (classification_id = null) {
   try {
-    let classifications = await invModel.getClassifications(); // ✅ Directly fetch the array
-
+    let classifications = await invModel.getClassifications();
     if (!classifications || classifications.length === 0) {
       console.warn("[buildClassificationList] No classifications found.");
       return "<select name='classification_id' id='classificationList' required><option value=''>No Classifications Available</option></select>";
     }
-
     let classificationList = `<select name="classification_id" id="classificationList" required>`;
     classificationList += `<option value=''>Choose a Classification</option>`;
-    
     classifications.forEach((row) => {
       classificationList += `<option value="${row.classification_id}"`;
       if (classification_id && row.classification_id == classification_id) {
-        classificationList += " selected"; // ✅ Keeps the selection if an error occurs
+        classificationList += " selected";
       }
       classificationList += `>${row.classification_name}</option>`;
     });
-
     classificationList += `</select>`;
-
     return classificationList;
   } catch (error) {
     console.error("[buildClassificationList] Error building classification list:", error);
     return "<select name='classification_id' id='classificationList' required><option value=''>Error Loading Classifications</option></select>";
   }
 };
-
-
-
 
 /* **************************************
 * Build the single view HTML
@@ -171,16 +165,40 @@ Util.handleErrors = function (fn) {
   };
 };
 
-// utilities/index.js
-// function handleErrors(fn) {
-//   return function (req, res, next) {
-//     try {
-//       return fn(req, res, next);
-//     } catch (error) {
-//       next(error); // Pass the error to the next middleware (error handler)
-//     }
-//   };
-// }
+/* ****************************************
+* Middleware to check token validity
+**************************************** */
+Util.checkJWTToken = (req, res, next) => {
+  if (req.cookies.jwt) {
+   jwt.verify(
+    req.cookies.jwt,
+    process.env.ACCESS_TOKEN_SECRET,
+    function (err, accountData) {
+     if (err) {
+      req.flash("Please log in")
+      res.clearCookie("jwt")
+      return res.redirect("/account/login")
+     }
+     res.locals.accountData = accountData
+     res.locals.loggedin = 1
+     next()
+    })
+  } else {
+   next()
+  }
+ }
+
+ /* ****************************************
+ *  Check Login
+ * ************************************ */
+ Util.checkLogin = (req, res, next) => {
+  if (res.locals.loggedin) {
+    next()
+  } else {
+    req.flash("notice", "Please log in.")
+    return res.redirect("/account/login")
+  }
+ }
 
 module.exports = {
   getNav: Util.getNav,
@@ -188,5 +206,7 @@ module.exports = {
   buildSingleView: Util.buildSingleView,
   buildLoginView: Util.buildLoginView, // Added
   handleErrors: Util.handleErrors,
-  buildClassificationList: Util.buildClassificationList, 
+  buildClassificationList: Util.buildClassificationList,
+  checkJWTToken: Util.checkJWTToken,
+  checkLogin: Util.checkLogin,
 };

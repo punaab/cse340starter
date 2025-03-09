@@ -24,10 +24,13 @@ router.get("/login", utilities.handleErrors(accountController.buildLogin))
 router.get("/register", utilities.handleErrors(accountController.buildRegister))
 
 /* **************************************
+* Build Management View
+* ************************************ */
+router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildManagement));
+
+/* **************************************
 * Register Account
 * ************************************ */
-
-// Process the registration data
 router.post(
     "/register",
     regValidate.registationRules(),
@@ -41,6 +44,6 @@ router.post(
   regValidate.loginRules(),
   regValidate.checkLoginData,
   utilities.handleErrors(accountController.accountLogin)
-)
+);
 
 module.exports = router;

@@ -71,6 +71,11 @@ app.use(bodyParser.urlencoded({ extended: true })); // Parses `application/x-www
 app.use(cookieParser())
 
 /* ***********************
+ * Utility Middleware
+ *************************/
+app.use(utilities.checkJWTToken)
+
+/* ***********************
  * View Engine Setup
  *************************/
 app.set("view engine", "ejs");
@@ -123,7 +128,7 @@ app.use(async (err, req, res, next) => {
 /* ***********************
  * Server Startup
  *************************/
-const PORT = process.env.PORT || 5500;
+const PORT = process.env.PORT || 5501;
 const HOST = process.env.HOST || "localhost";
 
 app.listen(PORT, () => {

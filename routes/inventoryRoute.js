@@ -14,7 +14,10 @@ router.get("/detail/:inventoryId", utilities.handleErrors(invController.buildByI
 router.get("/", utilities.handleErrors(invController.buildManagement));
 
 // Route for Adding a New Classification
-router.get("/add-classification", utilities.handleErrors(invController.buildNewClassification)); // Changed "new-classification" to "add-classification"
+router.get("/add-classification", utilities.handleErrors(invController.buildNewClassification));
+
+// Route to Get Inventory as JSON (Updated per instructions)
+router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryByClassificationId));
 
 // Route to Process Adding a Classification
 router.post(
@@ -28,7 +31,6 @@ router.get("/new-inventory", utilities.handleErrors(invController.buildNewInvent
 router.post("/new-inventory", utilities.handleErrors(invController.addNewInventory));
 
 module.exports = router;
-
 
 
 // Route to build inventory by classification view
