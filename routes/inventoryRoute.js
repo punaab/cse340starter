@@ -2,7 +2,7 @@ const express = require("express");
 const router = new express.Router();
 const invController = require("../controllers/invController");
 const utilities = require("../utilities");
-const validation = require("../middleware/validation"); // Import validation middleware
+const validation = require("../middleware/validation");
 
 // Route for Viewing Inventory by Classification ID
 router.get("/type/:classificationId", utilities.handleErrors(invController.buildByClassificationId));
@@ -16,13 +16,13 @@ router.get("/", utilities.handleErrors(invController.buildManagement));
 // Route for Adding a New Classification
 router.get("/add-classification", utilities.handleErrors(invController.buildNewClassification));
 
-// Route to Get Inventory as JSON (Updated per instructions)
+// Route to Get Inventory as JSON
 router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryByClassificationId));
 
 // Route to Process Adding a Classification
 router.post(
   "/add-classification",
-  validation.checkClassificationName, // Middleware to validate classification name
+  validation.checkClassificationName,
   utilities.handleErrors(invController.addClassification)
 );
 
@@ -30,17 +30,20 @@ router.post(
 router.get("/new-inventory", utilities.handleErrors(invController.buildNewInventory));
 router.post("/new-inventory", utilities.handleErrors(invController.addNewInventory));
 
+// Route to Display Edit Inventory View
+router.get("/edit/:inventory_id", utilities.handleErrors(invController.buildEditInventoryView));
+
+// Route to Process Updating Inventory
+router.post(
+  "/update",
+  validation.checkUpdateData, // ✅ Ensure validation middleware exists
+  utilities.handleErrors(invController.updateInventory)
+);
+
+// Route to Show Delete Confirmation Page
+router.get("/delete/:inventory_id", utilities.handleErrors(invController.buildDeleteConfirmationView));
+
+// Route to Process Deletion
+router.get("/delete-item/:inventory_id", utilities.handleErrors(invController.deleteInventoryItem));
+
 module.exports = router;
-
-
-// Route to build inventory by classification view
-
-
-// const express = require('express');
-// const router = express.Router();
-// const inventoryController = require('../controllers/baseController.js');
-
-// // Route for viewing a specific vehicle
-// router.get('/detail/:inventoryId', inventoryController.getVehicleDetail);
-
-// module.exports = router;

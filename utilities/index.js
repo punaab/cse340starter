@@ -200,6 +200,39 @@ Util.checkJWTToken = (req, res, next) => {
   }
  }
 
+ /* **************************************
+ * Handle session & authentication globally
+ ************************************** */
+Util.setGlobalSessionData = (req, res, next) => {
+  res.locals.loggedIn = req.session?.loggedIn || false;
+  res.locals.account_firstname = req.session?.account_firstname || "";
+  res.locals.account_id = req.session?.account_id || null;
+  res.locals.account_type = req.session?.account_type || "Client";
+  next();
+};
+
+/* **************************************
+ * Middleware to check if user is logged in
+ ************************************** */
+Util.requireLogin = (req, res, next) => {
+  if (!req.session?.loggedIn) {
+    req.flash("notice", "Please log in.");
+    return res.redirect("/account/login");
+  }
+  next();
+};
+
+/* **************************************
+ * Middleware to check if user is Admin/Employee
+ ************************************** */
+Util.requireAdminOrEmployee = (req, res, next) => {
+  if (!req.session?.loggedIn || !["Admin", "Employee"].includes(req.session.account_type)) {
+    req.flash("error", "Access Denied. Admin or Employee only.");
+    return res.redirect("/account/login");
+  }
+  next();
+};
+
 module.exports = {
   getNav: Util.getNav,
   buildClassificationGrid: Util.buildClassificationGrid,
@@ -209,4 +242,7 @@ module.exports = {
   buildClassificationList: Util.buildClassificationList,
   checkJWTToken: Util.checkJWTToken,
   checkLogin: Util.checkLogin,
+  setGlobalSessionData: Util.setGlobalSessionData,
+  requireLogin: Util.requireLogin,
+  requireAdminOrEmployee: Util.requireAdminOrEmployee
 };

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <main class="delete-confirm-container">
+    <h1 class="delete-title">⚠️ Confirm Deletion</h1>
+    <p class="delete-warning">This action is <strong>permanent</strong> and cannot be undone.</p>
+
+    <div class="delete-info">
+      <p><strong>Make:</strong> <%= inv_make %></p>
+      <p><strong>Model:</strong> <%= inv_model %></p>
+      <p><strong>Year:</strong> <%= inv_year %></p>
+      <p><strong>Price:</strong> $<%= inv_price.toLocaleString() %></p>
+    </div>
+
+    <div class="delete-actions">
+      <a href="/inv/delete-item/<%= inv_id %>" class="delete-button">Confirm Delete</a>
+      <a href="/inv/" class="cancel-button">Cancel</a>
+    </div>
+  </main>
+</body>
+</html>

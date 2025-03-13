@@ -110,12 +110,85 @@ async function addInventory(inv_make, inv_model, inv_year, inv_price, inv_miles,
   }
 }
 
+/* ***************************
+ *  Update Inventory Data
+ * ************************** */
+async function updateInventory(
+  inv_id,
+  inv_make,
+  inv_model,
+  inv_description,
+  inv_image,
+  inv_thumbnail,
+  inv_price,
+  inv_year,
+  inv_miles,
+  inv_color,
+  classification_id
+) {
+  try {
+    console.log(`[updateInventory] Updating item ID: ${inv_id}`);
+
+    const sql = `
+      UPDATE public.inventory 
+      SET inv_make = $1, inv_model = $2, inv_description = $3, 
+          inv_image = $4, inv_thumbnail = $5, inv_price = $6, 
+          inv_year = $7, inv_miles = $8, inv_color = $9, 
+          classification_id = $10 
+      WHERE inv_id = $11
+      RETURNING *`;
+
+    const result = await pool.query(sql, [
+      inv_make,
+      inv_model,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_year,
+      inv_miles,
+      inv_color,
+      classification_id,
+      inv_id
+    ]);
+
+    if (result.rows.length > 0) {
+      console.log(`[updateInventory] Successfully updated item ID: ${inv_id}`);
+      return result.rows[0]; // ✅ Return updated item
+    } else {
+      console.warn(`[updateInventory] No item found with ID: ${inv_id}`);
+      return null; // ❌ No item was updated
+    }
+  } catch (error) {
+    console.error("[updateInventory] Database Error:", error);
+    return null;
+  }
+}
+
+/* ***************************
+ *  Delete Inventory Item
+ * ************************** */
+async function deleteInventoryItem(inv_id) {
+  try {
+    const sql = 'DELETE FROM public.inventory WHERE inv_id = $1';
+    const data = await pool.query(sql, [inv_id]);
+    return data;
+  } catch (error) {
+    console.error("[deleteInventoryItem] Database Error:", error);
+    throw new Error("Delete Inventory Error");
+  }
+}
+
+
+
 
 module.exports = {
   getClassifications,
   getInventoryByClassificationId,
   getSingleByInventoryID,
   addClassification,
-  addInventory
+  addInventory, 
+  updateInventory,
+  deleteInventoryItem
 };
 

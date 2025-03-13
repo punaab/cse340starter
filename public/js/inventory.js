@@ -13,38 +13,43 @@ document.addEventListener("DOMContentLoaded", function () {
     const classification_id = classificationList.value;
     console.log(`Selected classification_id: ${classification_id}`);
 
-    if (classification_id) {
-      const classIdURL = `/inv/getInventory/${classification_id}`;
-      console.log(`Fetching from: ${classIdURL}`);
-      fetch(classIdURL)
-        .then(function (response) {
-          console.log(`Response status: ${response.status}`);
-          if (response.ok) {
-            return response.json();
-          }
-          throw new Error(`Network response was not OK: ${response.status}`);
-        })
-        .then(function (data) {
-          console.log("Inventory data received:", data);
-          console.log("Data type:", typeof data, "Length:", data?.length);
-          buildInventoryList(data);
-        })
-        .catch(function (error) {
-          console.error("Fetch error:", error.message);
-          inventoryDisplay.innerHTML = `
-            <tbody>
-              <tr><td colspan="3">Error loading inventory: ${error.message}</td></tr>
-            </tbody>
-          `;
-        });
-    } else {
-      inventoryDisplay.innerHTML = "";
+    if (!classification_id) {
+      inventoryDisplay.innerHTML = "<p>Please select a classification to view inventory.</p>";
+      return;
     }
+
+    const classIdURL = `/inv/getInventory/${classification_id}`;
+    console.log(`Fetching from: ${classIdURL}`);
+
+    fetch(classIdURL)
+      .then(response => {
+        console.log(`Response status: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log("Inventory data received:", data);
+        if (!Array.isArray(data)) {
+          throw new Error("Invalid data format received from server.");
+        }
+        buildInventoryList(data);
+      })
+      .catch(error => {
+        console.error("Fetch error:", error.message);
+        inventoryDisplay.innerHTML = `
+          <tbody>
+            <tr><td colspan="3" style="color: red;">Error loading inventory: ${error.message}</td></tr>
+          </tbody>
+        `;
+      });
   });
 });
 
 function buildInventoryList(data) {
   const inventoryDisplay = document.getElementById("inventoryDisplay");
+
   let dataTable = `
     <thead>
       <tr>
@@ -56,8 +61,8 @@ function buildInventoryList(data) {
     <tbody>
   `;
 
-  if (data && data.length > 0) {
-    data.forEach(function (element) {
+  if (data.length > 0) {
+    data.forEach(element => {
       console.log(`Building row: ${element.inv_id}, ${element.inv_model}`);
       dataTable += `
         <tr>
@@ -71,7 +76,7 @@ function buildInventoryList(data) {
     console.log("No data to display:", data);
     dataTable += `
       <tr>
-        <td colspan="3">No inventory items found for this classification.</td>
+        <td colspan="3" style="color: gray;">No inventory items found for this classification.</td>
       </tr>
     `;
   }

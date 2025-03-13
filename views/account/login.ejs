@@ -5,7 +5,11 @@
 <body>
 
   <!-- Flash message -->
-  <%- messages() %>
+<% if (messages && messages.notice) { %>
+  <div class="flash-message">
+    <p><%= messages.notice %></p>
+  </div>
+<% } %>
 
   <!-- Login Form -->
   <div class="login-container">

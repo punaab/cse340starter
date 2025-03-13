@@ -3,6 +3,12 @@
         <a href="/" title="Return to home page">CSE Motors</a>
     </span>
     <div id="tools">
-        <a title="Click to login" href="/account/login">Login/Signup</a>
+        <% if (!locals.loggedIn) { %>
+            <a title="Click to login" href="/account/login">Login/Signup</a>
+        <% } else { %>
+            <span class="welcome-text">Welcome, <%= locals.account_firstname %></span>
+            <a href="/account/manage">My Account</a>
+            <a href="/account/logout">Logout</a>
+        <% } %>
     </div>
 </header>

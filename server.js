@@ -51,13 +51,36 @@ app.use(
 );
 
 /* ***********************
+ * Session Middleware (Secure Sessions)
+ *************************/
+app.use(
+  session({
+    store: new (require("connect-pg-simple")(session))({
+      createTableIfMissing: true, // Auto-create session table if missing
+      pool,
+    }),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false, // Improve security by preventing empty sessions
+    name: "sessionId",
+    cookie: {
+      secure: process.env.NODE_ENV === "production", // Secure cookies in production
+      httpOnly: true, // Helps prevent XSS attacks
+      maxAge: 1000 * 60 * 60 * 24, // 1-day session
+    },
+  })
+);
+/* ***********************
  * Flash Messages Middleware
  *************************/
 app.use(flash());
-app.use(function (req, res, next) {
-  res.locals.messages = require("express-messages")(req, res);
+
+// Ensure flash messages are available globally
+app.use((req, res, next) => {
+  res.locals.messages = req.flash(); // Stores flash messages in `res.locals`
   next();
 });
+
 
 /* ***********************
  * Body Parser Middleware
@@ -74,6 +97,18 @@ app.use(cookieParser())
  * Utility Middleware
  *************************/
 app.use(utilities.checkJWTToken)
+
+app.use((req, res, next) => {
+  if (req.session) {
+    res.locals.messages = req.flash();
+    res.locals.loggedIn = req.session.loggedIn || false;
+    res.locals.account_firstname = req.session.account_firstname || "";
+    res.locals.account_id = req.session.account_id || null;
+    res.locals.account_type = req.session.account_type || "Client";
+  }
+  next();
+});
+
 
 /* ***********************
  * View Engine Setup
@@ -125,10 +160,11 @@ app.use(async (err, req, res, next) => {
   });
 });
 
+
 /* ***********************
  * Server Startup
  *************************/
-const PORT = process.env.PORT || 5501;
+const PORT = process.env.PORT || 5500;
 const HOST = process.env.HOST || "localhost";
 
 app.listen(PORT, () => {

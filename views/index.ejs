@@ -11,7 +11,11 @@
      -->
     <!-- <h1>CSE Motors</h1> -->
 
-    <%- messages() %>
+    <% if (messages && messages.notice) { %>
+        <div class="flash-message">
+          <p><%= messages.notice %></p>
+        </div>
+      <% } %>
 
     <h2>Welcome to CSE Motors!</h2>
     
