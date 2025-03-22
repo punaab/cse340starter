@@ -24,6 +24,9 @@ router.get("/register", utilities.handleErrors(accountController.buildRegister))
  ************************************ */
 router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildManagement));
 
+router.get("/manage", utilities.checkLogin, utilities.handleErrors(accountController.buildManagement));
+
+
 /* **************************************
  * Register Account
  ************************************ */
@@ -70,5 +73,12 @@ router.post(
  * Logout Route (Clears JWT Cookie)
  ************************************ */
 router.get("/logout", utilities.handleErrors(accountController.logout));
+
+// Show the Account Update Form
+router.get("/update/:account_id", 
+  utilities.checkLogin, 
+  utilities.handleErrors(accountController.buildAccountUpdate)
+);
+
 
 module.exports = router;

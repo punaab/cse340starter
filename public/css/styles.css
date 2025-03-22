@@ -978,3 +978,69 @@ input.valid {
   background-color: darkred;
   border-color: darkred;
 }
+
+.account-update-container {
+  max-width: 700px; /* Increased from 500px */
+  width: 100%;
+  margin: 40px auto;
+  padding: 2.5rem;
+  background-color: var(--primary-bg);
+  border-radius: 10px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
+}
+
+.account-update-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.account-update-form label {
+  font-weight: bold;
+  font-size: 0.95rem;
+  color: #fff;
+
+.account-update-form input {
+  padding: 0.7rem;
+  border-radius: 5px;
+  border: 1px solid var(--primary-fg);
+  font-size: 0.95rem;
+  background-color: #fff;
+  color: var(--primary-fg);
+  transition: border-color 0.3s ease;
+}
+
+.account-update-form input:focus {
+  outline: none;
+  border-color: var(--pop);
+  box-shadow: 0 0 5px rgba(13, 37, 105, 0.3);
+}
+
+.account-update-form button {
+  background-color: var(--primary-fg);
+  color: white;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.account-update-form button:hover {
+  background-color: var(--pop);
+}
+
+/* Mobile-friendly tweaks */
+@media screen and (max-width: 500px) {
+  .account-update-container {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  .account-update-form input,
+  .account-update-form button {
+    font-size: 0.9rem;
+  }
+}

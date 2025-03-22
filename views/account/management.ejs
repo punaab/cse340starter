@@ -31,7 +31,7 @@
       <h2>Welcome, <%= account_firstname %></h2>
 
       <!-- Update Account Info (Visible to Everyone) -->
-      <p><a href="/account/update/<%= account_id %>">Update Account Information</a></p>
+      <p><a href="/account/update/<%= accountData.account_id %>">Update Account Information</a></p>
 
       <!-- Show Inventory Management for Admin/Employee Only -->
       <% if (account_type === "Admin" || account_type === "Employee") { %>
