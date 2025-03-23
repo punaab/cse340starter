@@ -72,13 +72,14 @@ router.post(
 /* **************************************
  * Logout Route (Clears JWT Cookie)
  ************************************ */
-router.get("/logout", utilities.handleErrors(accountController.logout));
-
-// Show the Account Update Form
-router.get("/update/:account_id", 
-  utilities.checkLogin, 
-  utilities.handleErrors(accountController.buildAccountUpdate)
-);
-
+router.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Logout failed:", err);
+      return res.redirect("/account");
+    }
+    res.redirect("/");
+  });
+});
 
 module.exports = router;

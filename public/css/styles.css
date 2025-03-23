@@ -599,7 +599,7 @@ ul.open {
 /* Registration Form Box */
 .registration-container {
   max-width: 500px;
-  margin: 50px auto;
+  margin: 20px auto;
   padding: 2rem;
   background-color: var(--primary-bg);
   color: var(--primary-fg);
@@ -968,19 +968,19 @@ input.valid {
 }
 
 /* Logout Button */
-.logout-button {
+/* .logout-button {
   background-color: red;
   color: white;
-  border: 2px solid red;
-}
+  border: px solid red;
+} */
 
-.logout-button:hover {
+/* .logout-button:hover {
   background-color: darkred;
   border-color: darkred;
-}
+} */
 
 .account-update-container {
-  max-width: 700px; /* Increased from 500px */
+  max-width: 700px; 
   width: 100%;
   margin: 40px auto;
   padding: 2.5rem;
@@ -999,6 +999,7 @@ input.valid {
   font-weight: bold;
   font-size: 0.95rem;
   color: #fff;
+}
 
 .account-update-form input {
   padding: 0.7rem;

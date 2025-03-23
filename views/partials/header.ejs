@@ -1,14 +1,20 @@
 <header id="top-header">
     <span class="siteName">
-        <a href="/" title="Return to home page">CSE Motors</a>
+      <a href="/" title="Return to home page">CSE Motors</a>
     </span>
     <div id="tools">
-        <% if (!locals.loggedIn) { %>
-            <a title="Click to login" href="/account/login">Login/Signup</a>
-        <% } else { %>
-            <span class="welcome-text">Welcome, <%= locals.account_firstname %></span>
-            <a href="/account/manage">My Account</a>
-            <a href="/account/logout">Logout</a>
-        <% } %>
+      <% if (!locals.loggedIn) { %>
+        <a title="Click to login" href="/account/login">Login/Signup</a>
+      <% } else { %>
+        <span class="welcome-text">Welcome, <%= locals.account_firstname %></span>
+        <a href="/account/manage">My Account</a>
+  
+        <form action="/account/logout" method="POST">
+          <button type="submit" class="logout-button" title="Log out">
+            Logout
+          </button>
+        </form>
+      <% } %>
     </div>
-</header>
+  </header>
+  
