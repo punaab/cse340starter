@@ -26,6 +26,10 @@ router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.b
 
 router.get("/manage", utilities.checkLogin, utilities.handleErrors(accountController.buildManagement));
 
+/* **************************************
+ * GET Fallback
+ ************************************ */
+router.get("/logout", utilities.handleErrors(accountController.logout));
 
 /* **************************************
  * Register Account
@@ -72,14 +76,16 @@ router.post(
 /* **************************************
  * Logout Route (Clears JWT Cookie)
  ************************************ */
-router.post("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error("Logout failed:", err);
-      return res.redirect("/account");
-    }
-    res.redirect("/");
-  });
-});
+router.post("/logout", utilities.handleErrors(accountController.logout));
+
+/* **************************************
+ * Update Account View
+ ************************************ */
+// Deliver the Update Account View
+router.get(
+  "/update/:account_id",
+  utilities.checkLogin,
+  utilities.handleErrors(accountController.buildAccountUpdate)
+);
 
 module.exports = router;

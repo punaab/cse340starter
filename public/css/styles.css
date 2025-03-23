@@ -1033,15 +1033,43 @@ input.valid {
   background-color: var(--pop);
 }
 
-/* Mobile-friendly tweaks */
-@media screen and (max-width: 500px) {
-  .account-update-container {
-    width: 90%;
-    padding: 1.5rem;
+/* ==========================
+   Inventory Management - Mobile Fixes
+   ========================== */
+   @media screen and (max-width: 600px) {
+    nav ul.button-blue {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 0;
+    }
+  
+    nav ul.button-blue li {
+      width: 100%;
+      margin: 0.5rem 0;
+    }
+  
+    nav ul.button-blue a {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 1rem;
+      font-size: 1rem;
+    }
+  
+    table#inventoryDisplay {
+      display: block;
+      overflow-x: auto;
+      width: 100%;
+    }
+    .account-update-container {
+      width: 90%;
+      padding: 1.5rem;
+    }
+  
+    .account-update-form input,
+    .account-update-form button {
+      font-size: 0.9rem;
+    }
   }
-
-  .account-update-form input,
-  .account-update-form button {
-    font-size: 0.9rem;
-  }
-}
+  
+  

@@ -234,6 +234,7 @@ async function logout(req, res) {
       path: "/",
     });
     
+    console.log("After logout, cookies are:", req.cookies);
     return res.redirect("/");
   });
 }
