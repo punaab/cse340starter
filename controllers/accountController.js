@@ -210,15 +210,30 @@ async function updatePassword(req, res) {
  *  Process Logout (Clear JWT Cookie)
  * *************************************** */
 async function logout(req, res) {
-  // Set flash message BEFORE destroying session
+  // Flash message before destroying session
   req.flash("notice", "You have logged out.");
 
   req.session.destroy((err) => {
     if (err) {
       console.error("Logout Error:", err);
+      return res.redirect("/"); // Fail-safe redirect
     }
-    res.clearCookie("jwt");
-    res.clearCookie("sessionId"); // Clear session cookie
+
+    // Clear cookies after session is destroyed
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "Strict",
+      path: "/",
+    });
+
+    res.clearCookie("sessionId", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "Strict",
+      path: "/",
+    });
+    
     return res.redirect("/");
   });
 }
