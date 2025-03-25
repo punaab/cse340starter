@@ -123,7 +123,7 @@ validate.updateAccountRules = () => {
       .isLength({ min: 2 })
       .withMessage("Please provide a last name."),
 
-    body("account_email")
+      body("account_email")
       .trim()
       .isEmail()
       .normalizeEmail()
