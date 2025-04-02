@@ -1,0 +1,22 @@
+<%- include("../partials/header", { title: "Compose Message" }) %>
+
+<h1>➕ Compose Message</h1>
+
+<form action="/messages/send" method="POST">
+  <label for="recipient">To (Account ID):</label>
+  <input type="number" id="recipient" name="recipient" value="<%= recipient || '' %>" required>
+
+  <label for="subject">Subject:</label>
+  <input type="text" id="subject" name="subject" value="<%= subject || '' %>" required>
+
+  <label for="body">Message:</label>
+  <textarea id="body" name="body" rows="6" required><%= body || '' %></textarea>
+
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+
+  <button type="submit">Send</button>
+</form>
+
+<%- include("../partials/footer") %>

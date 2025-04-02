@@ -1071,5 +1071,59 @@ input.valid {
       font-size: 0.9rem;
     }
   }
+
+  .badge {
+    background-color: red;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+    margin-left: 8px;
+    font-size: 0.75rem;
+  }
+  
+  .nav-messages {
+    display: flex;
+    align-items: center;
+  }
+  
+  .message-button {
+    background-color: var(--pop);
+    color: white !important;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    transition: background 0.3s ease;
+  }
+  
+  .message-button:hover {
+    background-color: rgb(45, 45, 173);
+  }
+  
+  .message-button .badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background-color: red;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: bold;
+    padding: 3px 6px;
+    border-radius: 50%;
+  }
+  
+  /* Mobile Responsive Adjustments */
+  @media (max-width: 700px) {
+    .message-button {
+      width: 100%;
+      text-align: center;
+      margin-top: 0.5rem;
+      padding: 10px;
+      font-size: 1rem;
+    }
+  }
+  
   
   

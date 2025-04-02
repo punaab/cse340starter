@@ -4,40 +4,35 @@ const invModel = require("../models/inventory-model")
 // const invController = require('../controllers/invController'); 
 const Util = {}
 const jwt = require("jsonwebtoken")
+const messageModel = require("../models/message-model");
+
 require("dotenv").config()
 
 /* ************************
  * Constructs the nav HTML unordered list
  ************************** */
-Util.getNav = async function () {
+Util.getNav = async function (req = null, res = null) {
   try {
     let data = await invModel.getClassifications();
-
-    console.log("[getNav] Classifications Data:", data); // Debugging log
-
-    if (!Array.isArray(data)) {
-      console.error("[getNav] getClassifications() did not return an array. Received:", data);
-      data = []; // ✅ Ensure it's always an array
-    }
+    if (!Array.isArray(data)) data = [];
 
     let list = "<ul>";
     list += '<li><a href="/" title="Home page">Home</a></li>';
 
-    data.forEach((row) => { // ✅ This will now always work
+    data.forEach((row) => {
       list += "<li>";
       list += `<a href="/inv/type/${row.classification_id}" title="See our inventory of ${row.classification_name} vehicles">${row.classification_name}</a>`;
       list += "</li>";
     });
 
-    list += "</ul>";
+    list += "</ul>"; // ✅ You were missing this!
     return list;
 
   } catch (error) {
-    console.error("[getNav] Error fetching classifications:", error);
-    return "<ul><li><a href='/'>Home</a></li></ul>"; // ✅ Return basic nav if error occurs
+    console.error("[getNav] Error building nav:", error);
+    return "<ul><li><a href='/'>Home</a></li></ul>";
   }
 };
-
 
 /* **************************************
 * Build the classification view HTML
@@ -233,6 +228,24 @@ Util.requireAdminOrEmployee = (req, res, next) => {
   next();
 };
 
+/* **************************************
+ * Middleware to attach unread message count
+ ************************************** */
+Util.attachUnreadMessageCount = async (req, res, next) => {
+  try {
+    if (res.locals.loggedin && res.locals.accountData?.account_id) {
+      const count = await messageModel.getUnreadCount(res.locals.accountData.account_id);
+      res.locals.unreadMessageCount = count;
+    } else {
+      res.locals.unreadMessageCount = 0;
+    }
+  } catch (error) {
+    console.error("[attachUnreadMessageCount] Failed to fetch unread count:", error);
+    res.locals.unreadMessageCount = 0;
+  }
+  next();
+};
+
 module.exports = {
   getNav: Util.getNav,
   buildClassificationGrid: Util.buildClassificationGrid,
@@ -244,5 +257,6 @@ module.exports = {
   checkLogin: Util.checkLogin,
   setGlobalSessionData: Util.setGlobalSessionData,
   requireLogin: Util.requireLogin,
-  requireAdminOrEmployee: Util.requireAdminOrEmployee
+  requireAdminOrEmployee: Util.requireAdminOrEmployee,
+  attachUnreadMessageCount: Util.attachUnreadMessageCount
 };

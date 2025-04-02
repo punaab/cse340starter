@@ -98,6 +98,9 @@ app.use(cookieParser())
  *************************/
 app.use(utilities.checkJWTToken)
 
+const { attachUnreadMessageCount } = require("./utilities");
+app.use(attachUnreadMessageCount);
+
 app.use((req, res, next) => {
   if (req.session) {
     res.locals.messages = req.flash();
@@ -142,8 +145,9 @@ app.use("/static", staticRoute);
  * 404 Error Handling Middleware
  * Handles unmatched routes
  *************************/
-app.use((req, res, next) => {
-  next({ status: 404, message: "Sorry, we appear to have lost that page." });
+app.use(async (req, res, next) => {
+  const nav = await utilities.getNav(req, res);
+  next({ status: 404, message: "Sorry, we appear to have lost that page.", nav });
 });
 
 /* ***********************
@@ -151,14 +155,19 @@ app.use((req, res, next) => {
  *************************/
 app.use(async (err, req, res, next) => {
   console.error("[ERROR HANDLER] An error occurred:", err);
-
-  let nav = await utilities.getNav();
+  let nav = err.nav || await utilities.getNav(req, res);
   res.status(err.status || 500).render("errors/error", {
     title: err.status === 404 ? "404 - Page Not Found" : "500 - Server Error",
     message: err.message || "Something went wrong.",
     nav,
   });
 });
+
+/* ***********************
+ * Message Route Connection
+ *************************/
+const messageRoute = require("./routes/messageRoute"); 
+app.use("/messages", messageRoute); 
 
 
 /* ***********************

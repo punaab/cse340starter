@@ -245,3 +245,15 @@ UPDATE public.inventory
 SET inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
     inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
 
+-- Table structure for table 'message'
+CREATE TABLE IF NOT EXISTS public.message (
+    message_id SERIAL PRIMARY KEY,
+    message_subject VARCHAR(255) NOT NULL,
+    message_body TEXT NOT NULL,
+    message_created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    message_to INTEGER NOT NULL REFERENCES public.account(account_id),
+    message_from INTEGER NOT NULL REFERENCES public.account(account_id),
+    message_read BOOLEAN NOT NULL DEFAULT FALSE,
+    message_archived BOOLEAN NOT NULL DEFAULT FALSE
+);
+
