@@ -23,7 +23,6 @@ router.get("/register", utilities.handleErrors(accountController.buildRegister))
  * Build Management View
  ************************************ */
 router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildManagement));
-
 router.get("/manage", utilities.checkLogin, utilities.handleErrors(accountController.buildManagement));
 
 /* **************************************

@@ -9,27 +9,29 @@
   <body>
     <div id="wrapper">
       <%- include('../partials/header') %>
-
+      <% console.log("After header, loggedIn:", locals.loggedIn) %>
       <% if (locals.loggedIn) { %>
         <div class="messages-bar">
           <a href="/messages/inbox" class="nav-button message-button">
             Messages
-            <% if (locals.unreadCount && locals.unreadCount > 0) { %>
-              <span class="badge"><%= locals.unreadCount %></span>
+            <% console.log("Unread count:", locals.unreadMessageCount) %>
+            <% if (locals.unreadMessageCount && locals.unreadMessageCount > 0) { %>
+              <span class="badge"><%= locals.unreadMessageCount %></span>
             <% } %>
           </a>
         </div>
       <% } %>
-
       <%- include('../partials/navigation') %>
-
       <main>
+        <% if (messages.success) { %>
+          <div class="flash success"><%= messages.success %></div>
+        <% } %>
+        <% if (messages.error) { %>
+          <div class="flash error"><%= messages.error %></div>
+        <% } %>
         <%- body %>
       </main>
-
       <%- include('../partials/footer') %>
     </div>
   </body>
 </html>
-
-

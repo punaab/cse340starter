@@ -1080,6 +1080,11 @@ input.valid {
     margin-left: 8px;
     font-size: 0.75rem;
   }
+
+  .badge.has-unread {
+    background-color: crimson;
+    font-weight: bold;
+  }
   
   .nav-messages {
     display: flex;
@@ -1087,6 +1092,7 @@ input.valid {
   }
   
   .message-button {
+    width: 100%;
     background-color: var(--pop);
     color: white !important;
     padding: 8px 16px;
@@ -1094,7 +1100,7 @@ input.valid {
     font-weight: bold;
     text-decoration: none;
     display: inline-block;
-    position: relative;
+    text-align: center;
     transition: background 0.3s ease;
   }
   
@@ -1103,7 +1109,8 @@ input.valid {
   }
   
   .message-button .badge {
-    position: absolute;
+    width:100%;
+    text-align: center;
     top: -6px;
     right: -8px;
     background-color: red;

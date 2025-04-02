@@ -98,4 +98,23 @@ async function updatePassword(account_id, hashedPassword) {
   }
 }
 
-module.exports = { registerAccount, checkExistingEmail, getAccountByEmail, getAccountById, updateAccount, updatePassword };
+/* ****************************************
+ *  Get all users except the current one
+ * ************************************** */
+async function getAllUsersExcept(account_id) {
+    try {
+      const sql = `
+        SELECT account_id, account_firstname, account_lastname
+        FROM account
+        WHERE account_id != $1
+        ORDER BY account_firstname
+      `;
+      const result = await pool.query(sql, [account_id]);
+      return result.rows;
+    } catch (error) {
+      console.error("[getAllUsersExcept] Error:", error);
+      return [];
+    }
+  }
+  
+module.exports = { registerAccount, checkExistingEmail, getAccountByEmail, getAccountById, updateAccount, updatePassword, getAllUsersExcept, };
