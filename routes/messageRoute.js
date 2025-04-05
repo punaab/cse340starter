@@ -12,5 +12,6 @@ router.post("/send", checkLogin, messageController.send);
 router.get("/view/:message_id", utilities.handleErrors(messageController.view));
 router.post("/archive/:message_id", checkLogin, messageController.archive);
 router.post("/delete/:message_id", checkLogin, messageController.delete);
+router.post("/toggle-read/:message_id", checkLogin, messageController.toggleRead);
 
 module.exports = router;

@@ -1089,24 +1089,28 @@ input.valid {
 }
 
 /* Flash Messages */
+.flash-success, .flash-error {
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  border-radius: 8px;
+  font-weight: bold;
+  animation: fadeOut 3s ease-in-out forwards;
+}
+
 .flash-success {
-  background: rgba(0, 128, 0, 0.1);
-  color: green;
-  padding: 8px 12px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  font-size: 0.9rem;
-  text-align: center;
+  background-color: #d4edda;
+  color: #155724;
 }
 
 .flash-error {
-  background: rgba(255, 0, 0, 0.1);
-  color: red;
-  padding: 8px 12px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  font-size: 0.9rem;
-  text-align: center;
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; display: none; }
 }
 
 /* Inbox List */
@@ -1380,5 +1384,136 @@ input.valid {
     padding: 6px 10px;
     font-size: 0.8rem;
     width: 100%;
+  }
+}
+
+/* Message View Container */
+.message-view-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 15px;
+  background: var(--primary-bg);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.message-view-container h1 {
+  font-size: 1.5rem;
+  font-family: var(--decorative-font);
+  color: var(--primary-fg);
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.message-details {
+  padding: 10px;
+  background: var(--secondary-bg);
+  color: var(--secondary-fg);
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.message-details p {
+  margin: 5px 0;
+  font-size: 0.95rem;
+}
+
+.message-details strong {
+  color: var(--pop);
+}
+
+.message-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/* New Toggle Read Button */
+.btn-toggle-read {
+  background: #17a2b8; /* Cyan for distinction */
+  color: white;
+  padding: 4px 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-block;
+  min-width: 80px; /* Slightly wider for readability */
+  border: none;
+}
+
+.btn-toggle-read:hover {
+  background: #138496; /* Darker cyan on hover */
+  transform: translateY(-1px);
+}
+
+/* Back Button */
+.btn-back {
+  background: var(--primary-fg);
+  color: white;
+  padding: 4px 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-block;
+  min-width: 60px;
+}
+
+.btn-back:hover {
+  background: var(--pop);
+  transform: translateY(-1px);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .message-view-container {
+    margin: 10px;
+    padding: 10px;
+  }
+
+  .message-view-container h1 {
+    font-size: 1.25rem;
+  }
+
+  .message-actions {
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .btn-toggle-read,
+  .btn-back,
+  .btn-archive,
+  .btn-delete {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+    min-width: 100%; /* Full width on mobile */
+  }
+
+  .action-form {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .message-details p {
+    font-size: 0.9rem;
+  }
+
+  .btn-toggle-read,
+  .btn-back,
+  .btn-archive,
+  .btn-delete {
+    padding: 6px 10px;
+    font-size: 0.8rem;
   }
 }

@@ -86,29 +86,28 @@ const messageController = {
 
   async view(req, res, next) {
     try {
-      console.log(`View - Full req.params:`, req.params);
       const messageIdRaw = req.params.message_id;
+      console.log(`View - Full req.params:`, req.params);
       console.log(`View - Raw message_id from params: "${messageIdRaw}"`);
-      const messageId = parseInt(messageIdRaw, 10);
-      if (isNaN(messageId) || messageId <= 0) {
+      if (!messageIdRaw || isNaN(parseInt(messageIdRaw, 10))) {
         console.log(`View - Invalid message ID: ${messageIdRaw}`);
         req.flash("error", "Invalid message ID.");
         return res.redirect("/messages/inbox");
       }
+      const messageId = parseInt(messageIdRaw, 10);
       const accountId = res.locals.account_id;
       console.log(`View - Attempting to fetch message ID: ${messageId} for account ID: ${accountId}`);
+  
       const message = await messageModel.getMessageById(messageId, accountId);
       if (!message) {
-        console.log(`View - Message ID ${messageId} not found or not accessible for account ID ${accountId}`);
+        console.log(`View - Message not found or access denied for ID: ${messageId}`);
         req.flash("error", "Message not found or you don’t have access to it.");
         return res.redirect("/messages/inbox");
       }
-      if (!message.message_read) {
-        console.log(`View - Marking message ID ${messageId} as read`);
-        await messageModel.markRead(messageId, accountId);
-      }
-      const nav = await utilities.getNav(req, res);
-      const renderData = {
+  
+      const nav = await utilities.getNav();
+  
+      console.log(`View - Data passed:`, {
         title: message.message_subject,
         nav,
         message_subject: message.message_subject,
@@ -117,27 +116,27 @@ const messageController = {
         message_read: message.message_read,
         message_body: message.message_body,
         message_id: message.message_id,
-        messages: res.locals.messages || {},
+        messages: res.locals.messages,
         loggedIn: res.locals.loggedIn,
-        unreadMessageCount: res.locals.unreadMessageCount,
-      };
-      console.log("View - Data passed:", renderData);
-      const bodyContent = await new Promise((resolve, reject) => {
-        req.app.render("messages/view", renderData, (err, html) => {
-          if (err) reject(err);
-          else resolve(html);
-        });
+        unreadMessageCount: res.locals.unreadMessageCount
       });
-      const finalHtml = await new Promise((resolve, reject) => {
-        req.app.render("layouts/layout", { ...renderData, body: bodyContent }, (err, html) => {
-          if (err) reject(err);
-          else resolve(html);
-        });
+  
+      res.render("messages/view", {
+        title: message.message_subject,
+        nav,
+        message_subject: message.message_subject,
+        sender_name: message.sender_name,
+        message_created: message.message_created,
+        message_read: message.message_read,
+        message_body: message.message_body,
+        message_id: message.message_id,
+        messages: res.locals.messages,
+        loggedIn: res.locals.loggedIn,
+        unreadMessageCount: res.locals.unreadMessageCount
       });
-      res.send(finalHtml);
     } catch (err) {
       console.error("View - Error:", err);
-      req.flash("error", "An error occurred while loading the message.");
+      req.flash("error", "Failed to load message.");
       res.redirect("/messages/inbox");
     }
   },
@@ -191,6 +190,44 @@ const messageController = {
       res.redirect("/messages/inbox");
     }
   },
+  async toggleRead(req, res, next) {
+    try {
+      const messageIdRaw = req.params.message_id;
+      console.log(`ToggleRead - Raw message_id from params: "${messageIdRaw}"`);
+      if (!messageIdRaw || isNaN(parseInt(messageIdRaw, 10))) {
+        console.log(`ToggleRead - Invalid message ID: ${messageIdRaw}`);
+        req.flash("error", "Invalid message ID.");
+        return res.redirect(`/messages/view/${messageIdRaw}`);
+      }
+      const messageId = parseInt(messageIdRaw, 10);
+      const accountId = res.locals.account_id;
+      console.log(`ToggleRead - Toggling read status for message ID: ${messageId} for account ID: ${accountId}`);
+  
+      // Get current message status
+      const message = await messageModel.getMessageById(messageId, accountId);
+      if (!message) {
+        console.log(`ToggleRead - Message not found or access denied for ID: ${messageId}`);
+        req.flash("error", "Message not found or you don’t have access to it.");
+        return res.redirect(`/messages/view/${messageId}`);
+      }
+  
+      // Toggle the read status
+      const newStatus = !message.message_read; // Flip current status
+      const result = await messageModel.updateReadStatus(messageId, accountId, newStatus);
+      if (result.rowCount === 0) {
+        console.log(`ToggleRead - No rows affected for message ID: ${messageId}`);
+        req.flash("error", "Failed to update message status.");
+      } else {
+        console.log(`ToggleRead - Successfully updated message ID: ${messageId} to read: ${newStatus}`);
+        req.flash("success", `Message is now marked as ${newStatus ? "read" : "unread"}.`);
+      }
+      res.redirect(`/messages/view/${messageId}`);
+    } catch (err) {
+      console.error("ToggleRead - Error:", err);
+      req.flash("error", "Failed to update message status.");
+      res.redirect(`/messages/view/${req.params.message_id}`);
+    }
+  }
 };
 
 module.exports = messageController;

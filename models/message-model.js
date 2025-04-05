@@ -41,7 +41,7 @@ async function getMessageById(message_id, account_id) {
 }
 
 /* ******************************
- * Mark a message as read
+ * Mark a message as read (legacy, kept for compatibility)
  ******************************/
 async function markRead(message_id, account_id) {
   const sql = `
@@ -49,6 +49,25 @@ async function markRead(message_id, account_id) {
     WHERE message_id = $1 AND message_to = $2
   `;
   return pool.query(sql, [message_id, account_id]);
+}
+
+/* ******************************
+ * Update message read status (new function for toggle)
+ ******************************/
+async function updateReadStatus(message_id, account_id, isRead) {
+  try {
+    const sql = `
+      UPDATE message
+      SET message_read = $1
+      WHERE message_id = $2 AND message_to = $3
+      RETURNING *
+    `;
+    const result = await pool.query(sql, [isRead, message_id, account_id]);
+    return result;
+  } catch (err) {
+    console.error("updateReadStatus - Error:", err);
+    throw err;
+  }
 }
 
 /* ******************************
@@ -103,6 +122,7 @@ module.exports = {
   getInbox,
   getMessageById,
   markRead,
+  updateReadStatus,
   archiveMessage,
   deleteMessage,
   getUnreadCount,
