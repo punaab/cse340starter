@@ -1,28 +1,18 @@
-<%- include("../partials/header", { title: "View Message" }) %>
-
-<h1>📨 Message from <%= message.sender_name %></h1>
-
-<p><strong>Subject:</strong> <%= message.message_subject %></p>
-<p><strong>Date:</strong> <%= new Date(message.message_created).toLocaleString() %></p>
-<p><strong>Message:</strong></p>
-<p><%= message.message_body %></p>
-
-<form action="/messages/archive/<%= message.message_id %>" method="POST" style="display:inline">
-  <button type="submit">Archive</button>
-</form>
-<form action="/messages/delete/<%= message.message_id %>" method="POST" style="display:inline">
-  <button type="submit">Delete</button>
-</form>
-
-<hr>
-
-<h2>↩️ Reply</h2>
-<form action="/messages/send" method="POST">
-  <input type="hidden" name="recipient" value="<%= message.message_from %>">
-  <input type="hidden" name="subject" value="RE: <%= message.message_subject %>">
-  <label for="body">Message:</label>
-  <textarea id="body" name="body" rows="6" required></textarea>
-  <button type="submit">Send Reply</button>
-</form>
-
-<%- include("../partials/footer") %>
+<div class="messages-container">
+  <div class="message-view">
+    <h1><%= message_subject %></h1>
+    <p><strong>From:</strong> <%= sender_name %></p>
+    <p><strong>Date:</strong> <%= new Date(message_created).toLocaleString() %></p>
+    <p><strong>Status:</strong> <%= message_read ? "Read" : "Unread" %></p>
+    <hr>
+    <p><%= message_body %></p>
+    <div class="message-actions">
+      <form action="/messages/archive/<%= message_id %>" method="POST" class="action-form">
+        <button type="submit" class="btn btn-archive">Archive</button>
+      </form>
+      <form action="/messages/delete/<%= message_id %>" method="POST" class="action-form">
+        <button type="submit" class="btn btn-delete">Delete</button>
+      </form>
+    </div>
+  </div>
+</div>

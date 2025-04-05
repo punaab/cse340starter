@@ -84,6 +84,20 @@ async function getUnreadCount(account_id) {
   return result.rows[0].count;
 }
 
+/* ******************************
+ * Get all users except the current user
+ ******************************/
+async function getAllUsersExcept(account_id) {
+  const sql = `
+    SELECT account_id, account_firstname || ' ' || account_lastname AS full_name
+    FROM account
+    WHERE account_id != $1
+    ORDER BY account_lastname, account_firstname
+  `;
+  const result = await pool.query(sql, [account_id]);
+  return result.rows;
+}
+
 module.exports = {
   createMessage,
   getInbox,
@@ -91,5 +105,6 @@ module.exports = {
   markRead,
   archiveMessage,
   deleteMessage,
-  getUnreadCount
+  getUnreadCount,
+  getAllUsersExcept
 };

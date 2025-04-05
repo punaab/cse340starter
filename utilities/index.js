@@ -207,13 +207,15 @@ Util.requireAdminOrEmployee = (req, res, next) => {
  ************************************** */
 Util.attachUnreadMessageCount = async (req, res, next) => {
   try {
-    console.log("attachUnreadMessageCount - loggedIn:", req.session.loggedIn, "account_id:", req.session.account_id);
+    console.log("[attachUnreadMessageCount] Starting for URL:", req.url);
+    console.log("[attachUnreadMessageCount] Session loggedIn:", req.session.loggedIn, "account_id:", req.session.account_id);
     if (req.session.loggedIn && req.session.account_id) {
       const count = await messageModel.getUnreadCount(req.session.account_id);
-      console.log("Unread count set:", count);
-      res.locals.unreadMessageCount = count;
+      console.log("[attachUnreadMessageCount] Unread count:", count);
+      res.locals.unreadMessageCount = Number(count);
     } else {
       res.locals.unreadMessageCount = 0;
+      console.log("[attachUnreadMessageCount] No session, setting unread count to 0");
     }
   } catch (error) {
     console.error("[attachUnreadMessageCount] Failed to fetch unread count:", error);

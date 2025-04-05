@@ -1,11 +1,18 @@
-const utilities = require('../utilities');
-// const { Util } = require('../utilities'); // Import 'Util' from utilities
+const utilities = require("../utilities");
+
 const baseController = {};
 
-baseController.buildHome = async function(req, res){
-  const nav = await utilities.getNav(req, res);
-  // req.flash("notice", "This is a flash message.") //add 'notice' for css
-  res.render("index", { title: "Home", nav });
+baseController.buildHome = async function (req, res, next) {
+  try {
+    const nav = await utilities.getNav(req, res);
+    res.render("index", {
+      title: "Home",
+      nav,
+      messages: res.locals.messages || {}, // Ensure messages is passed
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports = baseController;

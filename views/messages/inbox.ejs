@@ -1,42 +1,42 @@
-<%- include("../partials/header", { title: "Inbox" }) %>
-
-<h1>📥 Inbox</h1>
-
-<% if (messages.length === 0) { %>
-  <p>You have no messages.</p>
-<% } else { %>
-  <table>
-    <thead>
-      <tr>
-        <th>From</th>
-        <th>Subject</th>
-        <th>Date</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% messages.forEach(msg => { %>
-        <tr>
-          <td><%= msg.sender_name %></td>
-          <td><%= msg.message_subject %></td>
-          <td><%= new Date(msg.message_created).toLocaleString() %></td>
-          <td><%= msg.message_read ? "Read" : "Unread" %></td>
-          <td>
-            <a href="/messages/view/<%= msg.message_id %>">View</a>
-            <form action="/messages/archive/<%= msg.message_id %>" method="POST" style="display:inline">
-              <button type="submit">Archive</button>
+<div class="messages-container">
+  <h1>Inbox</h1>
+  <a href="/messages/compose" class="btn btn-compose">Compose New Message</a>
+  <% if (messages.success && messages.success.length > 0) { %>
+  <% } %>
+  <% if (messages.error && messages.error.length > 0) { %>
+    <div class="flash-error">
+      <%= messages.error[0] %>
+    </div>
+  <% } %>
+  <% if (inboxMessages.length === 0) { %>
+    <p class="no-messages">You have no messages.</p>
+  <% } else { %>
+    <ul class="inbox-list">
+      <% inboxMessages.forEach(msg => { %>
+        <li class="inbox-card">
+          <div class="inbox-header">
+            <span class="inbox-from"><%= msg.sender_name %></span>
+            <span class="inbox-status <%= msg.message_read ? 'read' : 'unread' %>">
+              <%= msg.message_read ? "Read" : "Unread" %>
+            </span>
+          </div>
+          <div class="inbox-body">
+            <a href="/messages/view/<%= msg.message_id %>" class="inbox-subject"><%= msg.message_subject %></a>
+            <p class="inbox-preview"><%= msg.message_body.substring(0, 60) %>...</p>
+            <span class="inbox-date"><%= new Date(msg.message_created).toLocaleDateString() %></span>
+          </div>
+          <div class="inbox-actions">
+            <a href="/messages/view/<%= msg.message_id %>" class="btn btn-view">View</a>
+            <form action="/messages/archive/<%= msg.message_id %>" method="POST" class="action-form">
+              <button type="submit" class="btn btn-archive">Archive</button>
             </form>
-            <form action="/messages/delete/<%= msg.message_id %>" method="POST" style="display:inline">
-              <button type="submit">Delete</button>
+            <form action="/messages/delete/<%= msg.message_id %>" method="POST" class="action-form">
+              <button type="submit" class="btn btn-delete">Delete</button>
             </form>
-          </td>
-        </tr>
+          </div>
+        </li>
       <% }) %>
-    </tbody>
-  </table>
-<% } %>
-
-<a href="/messages/compose" class="btn">➕ Compose</a>
-
-<%- include("../partials/footer") %>
+    </ul>
+  <% } %>
+  <a href="/messages/compose" class="btn btn-compose">Compose New Message</a>
+</div>

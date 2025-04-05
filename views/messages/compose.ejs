@@ -1,22 +1,30 @@
-<%- include("../partials/header", { title: "Compose Message" }) %>
-<h1>➕ Compose Message</h1>
-<form action="/messages/send" method="POST">
-  <label for="recipient">To:</label>
-  <select name="recipient" id="recipient" required>
-    <option value="">Select a user</option>
-    <% users.forEach(user => { %>
-      <option value="<%= user.account_id %>" <%= recipient == user.account_id ? "selected" : "" %>>
-        <%= user.account_firstname %> <%= user.account_lastname %>
-      </option>
-    <% }) %>
-  </select>
-  <label for="subject">Subject:</label>
-  <input type="text" id="subject" name="subject" value="<%= subject || '' %>" required>
-  <label for="body">Message:</label>
-  <textarea id="body" name="body" rows="6" required><%= body || '' %></textarea>
-  <% if (error) { %>
-    <p class="error"><%= error %></p>
+<div class="messages-container">
+  <h1>Compose Message</h1>
+  <% if (messages.error && messages.error.length > 0) { %>
+    <div class="flash-error">
+      <%= messages.error[0] %>
+    </div>
   <% } %>
-  <button type="submit">Send</button>
-</form>
-<%- include("../partials/footer") %>
+  <% if (messages.success && messages.success.length > 0) { %>
+    <div class="flash-success">
+      <%= messages.success[0] %>
+    </div>
+  <% } %>
+  <form action="/messages/send" method="POST" class="message-form">
+    <label for="recipient">To:</label>
+    <select name="recipient" id="recipient" required>
+      <option value="">Select a recipient</option>
+      <% users.forEach(user => { %>
+        <option value="<%= user.account_id %>"><%= user.full_name %></option>
+      <% }) %>
+    </select>
+    
+    <label for="subject">Subject:</label>
+    <input type="text" id="subject" name="subject" value="<%= subject %>" required>
+    
+    <label for="body">Message:</label>
+    <textarea id="body" name="body" rows="6" required><%= body %></textarea>
+    
+    <button type="submit" class="btn btn-send">Send Message</button>
+  </form>
+</div>

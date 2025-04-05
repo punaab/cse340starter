@@ -3,19 +3,17 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
+    <title><%= title || 'CSE Motors' %></title>
     <link rel="stylesheet" href="/css/styles.css"> 
   </head>
   <body>
     <div id="wrapper">
       <%- include('../partials/header') %>
-      <% console.log("After header, loggedIn:", locals.loggedIn) %>
       <% if (locals.loggedIn) { %>
         <div class="messages-bar">
           <a href="/messages/inbox" class="nav-button message-button">
             Messages
-            <% console.log("Unread count:", locals.unreadMessageCount) %>
-            <% if (locals.unreadMessageCount && locals.unreadMessageCount > 0) { %>
+            <% if (typeof locals.unreadMessageCount === 'number' && locals.unreadMessageCount > 0) { %>
               <span class="badge"><%= locals.unreadMessageCount %></span>
             <% } %>
           </a>
@@ -23,11 +21,11 @@
       <% } %>
       <%- include('../partials/navigation') %>
       <main>
-        <% if (messages.success) { %>
-          <div class="flash success"><%= messages.success %></div>
+        <% if (messages && messages.success && messages.success.length > 0) { %>
+          <div class="flash-success"><%= messages.success[0] %></div>
         <% } %>
-        <% if (messages.error) { %>
-          <div class="flash error"><%= messages.error %></div>
+        <% if (messages && messages.error && messages.error.length > 0) { %>
+          <div class="flash-error"><%= messages.error[0] %></div>
         <% } %>
         <%- body %>
       </main>

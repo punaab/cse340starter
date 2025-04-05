@@ -1,64 +1,84 @@
 const messageModel = require("../models/message-model");
-const accountModel = require("../models/account-model"); 
 const utilities = require("../utilities");
 
 const messageController = {
   async inbox(req, res, next) {
     try {
       const nav = await utilities.getNav(req, res);
-      const messages = await messageModel.getInbox(res.locals.account_id);
-      res.render("messages/inbox", { title: "Inbox", messages, nav });
+      const inboxMessages = await messageModel.getInbox(res.locals.account_id);
+      const renderData = {
+        title: "Inbox",
+        nav,
+        inboxMessages,
+        messages: res.locals.messages || {},
+        loggedIn: res.locals.loggedIn,
+        unreadMessageCount: res.locals.unreadMessageCount,
+      };
+      console.log("Inbox - Data passed:", renderData);
+      const bodyContent = await new Promise((resolve, reject) => {
+        req.app.render("messages/inbox", renderData, (err, html) => {
+          if (err) reject(err);
+          else resolve(html);
+        });
+      });
+      const finalHtml = await new Promise((resolve, reject) => {
+        req.app.render("layouts/layout", { ...renderData, body: bodyContent }, (err, html) => {
+          if (err) reject(err);
+          else resolve(html);
+        });
+      });
+      res.send(finalHtml);
     } catch (err) {
+      console.error("Inbox - Error:", err);
       next(err);
     }
   },
 
-// messageController.js
-async compose(req, res, next) {
+  async compose(req, res, next) {
     try {
-      console.log("Entering compose for account_id:", res.locals.account_id);
       const nav = await utilities.getNav(req, res);
-      console.log("Nav fetched");
-      const users = await accountModel.getAllUsersExcept(res.locals.account_id);
-      console.log("Users fetched:", users);
-      console.log("Rendering messages/compose");
-      res.render("messages/compose", {
+      const users = await messageModel.getAllUsersExcept(res.locals.account_id);
+      const renderData = {
         title: "Compose Message",
-        recipient: "",
-        subject: "",
-        body: "",
-        error: "",
-        users,
         nav,
+        users,
+        subject: "", // Default empty for new message
+        body: "",    // Default empty for new message
+        messages: res.locals.messages || {}, // Includes flash messages
+        loggedIn: res.locals.loggedIn,
+        unreadMessageCount: res.locals.unreadMessageCount,
+      };
+      console.log("Compose - Data passed:", renderData);
+      const bodyContent = await new Promise((resolve, reject) => {
+        req.app.render("messages/compose", renderData, (err, html) => {
+          if (err) reject(err);
+          else resolve(html);
+        });
       });
-      console.log("Render called"); // Won’t log due to res.render ending response
+      const finalHtml = await new Promise((resolve, reject) => {
+        req.app.render("layouts/layout", { ...renderData, body: bodyContent }, (err, html) => {
+          if (err) reject(err);
+          else resolve(html);
+        });
+      });
+      res.send(finalHtml);
     } catch (err) {
-      console.error("Error in compose:", err);
-      next(err);
+      console.error("Compose - Error:", err);
+      req.flash("error", "An error occurred while loading the compose page.");
+      res.redirect("/messages/inbox");
     }
   },
-  
-  async send(req, res) {
+
+  async send(req, res, next) {
+    // Assuming you have this from earlier
     const { recipient, subject, body } = req.body;
     const from = res.locals.account_id;
-
-    if (!recipient || !subject || !body) {
-      const nav = await utilities.getNav(req, res);
-      return res.render("messages/compose", {
-        title: "Compose Message",
-        recipient,
-        subject,
-        body,
-        error: "All fields are required.",
-        nav,
-      });
-    }
-
     try {
       await messageModel.createMessage(from, recipient, subject, body);
-      req.flash("success", "Message sent!");
+      req.flash("success", "Message sent successfully!");
       res.redirect("/messages/inbox");
     } catch (err) {
+      console.error("Send - Error:", err);
       req.flash("error", "Failed to send message.");
       res.redirect("/messages/compose");
     }
@@ -66,36 +86,111 @@ async compose(req, res, next) {
 
   async view(req, res, next) {
     try {
-      const nav = await utilities.getNav(req, res);
-      const message = await messageModel.getMessageById(req.params.id, res.locals.account_id);
-      if (!message) {
-        return res.status(403).send("Message not found or not authorized.");
+      console.log(`View - Full req.params:`, req.params);
+      const messageIdRaw = req.params.message_id;
+      console.log(`View - Raw message_id from params: "${messageIdRaw}"`);
+      const messageId = parseInt(messageIdRaw, 10);
+      if (isNaN(messageId) || messageId <= 0) {
+        console.log(`View - Invalid message ID: ${messageIdRaw}`);
+        req.flash("error", "Invalid message ID.");
+        return res.redirect("/messages/inbox");
       }
-
-      await messageModel.markRead(req.params.id, res.locals.account_id);
-      res.render("messages/view", { title: "View Message", message, nav });
+      const accountId = res.locals.account_id;
+      console.log(`View - Attempting to fetch message ID: ${messageId} for account ID: ${accountId}`);
+      const message = await messageModel.getMessageById(messageId, accountId);
+      if (!message) {
+        console.log(`View - Message ID ${messageId} not found or not accessible for account ID ${accountId}`);
+        req.flash("error", "Message not found or you don’t have access to it.");
+        return res.redirect("/messages/inbox");
+      }
+      if (!message.message_read) {
+        console.log(`View - Marking message ID ${messageId} as read`);
+        await messageModel.markRead(messageId, accountId);
+      }
+      const nav = await utilities.getNav(req, res);
+      const renderData = {
+        title: message.message_subject,
+        nav,
+        message_subject: message.message_subject,
+        sender_name: message.sender_name,
+        message_created: message.message_created,
+        message_read: message.message_read,
+        message_body: message.message_body,
+        message_id: message.message_id,
+        messages: res.locals.messages || {},
+        loggedIn: res.locals.loggedIn,
+        unreadMessageCount: res.locals.unreadMessageCount,
+      };
+      console.log("View - Data passed:", renderData);
+      const bodyContent = await new Promise((resolve, reject) => {
+        req.app.render("messages/view", renderData, (err, html) => {
+          if (err) reject(err);
+          else resolve(html);
+        });
+      });
+      const finalHtml = await new Promise((resolve, reject) => {
+        req.app.render("layouts/layout", { ...renderData, body: bodyContent }, (err, html) => {
+          if (err) reject(err);
+          else resolve(html);
+        });
+      });
+      res.send(finalHtml);
     } catch (err) {
-      next(err);
+      console.error("View - Error:", err);
+      req.flash("error", "An error occurred while loading the message.");
+      res.redirect("/messages/inbox");
     }
   },
 
   async archive(req, res, next) {
     try {
-      await messageModel.archiveMessage(req.params.id, res.locals.account_id);
+      console.log("Archive - Full req.params:", req.params); // Add this line
+      const messageIdRaw = req.params.message_id;
+      console.log(`Archive - Raw message_id from params: "${messageIdRaw}"`);
+      if (!messageIdRaw || isNaN(parseInt(messageIdRaw, 10))) {
+        console.log(`Archive - Invalid message ID: ${messageIdRaw}`);
+        req.flash("error", "Invalid message ID.");
+        return res.redirect("/messages/inbox");
+      }
+      const messageId = parseInt(messageIdRaw, 10);
+      const accountId = res.locals.account_id;
+      console.log(`Archive - Archiving message ID: ${messageId} for account ID: ${accountId}`);
+      const result = await messageModel.archiveMessage(messageId, accountId);
+      if (result.rowCount === 0) {
+        console.log(`Archive - No rows affected for message ID: ${messageId}`);
+        req.flash("error", "Message not found or you don’t have access to archive it.");
+      } else {
+        console.log(`Archive - Successfully archived message ID: ${messageId}`);
+        req.flash("success", "Message archived successfully.");
+      }
       res.redirect("/messages/inbox");
     } catch (err) {
-      next(err);
+      console.error("Archive - Error:", err);
+      req.flash("error", "Failed to archive message.");
+      res.redirect("/messages/inbox");
     }
   },
 
   async delete(req, res, next) {
     try {
-      await messageModel.deleteMessage(req.params.id, res.locals.account_id);
+      const messageId = parseInt(req.params.message_id, 10);
+      const accountId = res.locals.account_id;
+      console.log(`Delete - Deleting message ID: ${messageId} for account ID: ${accountId}`);
+      const result = await messageModel.deleteMessage(messageId, accountId);
+      if (result.rowCount === 0) {
+        console.log(`Delete - No rows affected for message ID: ${messageId}`);
+        req.flash("error", "Message not found or you don’t have access to delete it.");
+      } else {
+        console.log(`Delete - Successfully deleted message ID: ${messageId}`);
+        req.flash("success", "Message deleted successfully.");
+      }
       res.redirect("/messages/inbox");
     } catch (err) {
-      next(err);
+      console.error("Delete - Error:", err);
+      req.flash("error", "Failed to delete message.");
+      res.redirect("/messages/inbox");
     }
-  }
+  },
 };
 
 module.exports = messageController;
