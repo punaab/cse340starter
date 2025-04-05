@@ -104,10 +104,6 @@ const messageController = {
         return res.redirect("/messages/inbox");
       }
 
-      // Removed: Automatic mark as read
-      // console.log(`View - Marking message ID: ${messageId} as read`);
-      // await messageModel.updateReadStatus(messageId, accountId, true);
-
       // Fetch navigation
       const nav = await utilities.getNav();
 
@@ -217,7 +213,7 @@ const messageController = {
       }
 
       // Toggle the read status
-      const newStatus = !message.message_read; // Flip current status
+      const newStatus = !message.message_read; 
       const result = await messageModel.updateReadStatus(messageId, accountId, newStatus);
       if (result.rowCount === 0) {
         console.log(`ToggleRead - No rows affected for message ID: ${messageId}`);
