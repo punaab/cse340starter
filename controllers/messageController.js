@@ -42,9 +42,9 @@ const messageController = {
         title: "Compose Message",
         nav,
         users,
-        subject: "", // Default empty for new message
-        body: "",    // Default empty for new message
-        messages: res.locals.messages || {}, // Includes flash messages
+        subject: "",
+        body: "",
+        messages: res.locals.messages || {},
         loggedIn: res.locals.loggedIn,
         unreadMessageCount: res.locals.unreadMessageCount,
       };
@@ -70,7 +70,6 @@ const messageController = {
   },
 
   async send(req, res, next) {
-    // Assuming you have this from earlier
     const { recipient, subject, body } = req.body;
     const from = res.locals.account_id;
     try {
@@ -97,16 +96,21 @@ const messageController = {
       const messageId = parseInt(messageIdRaw, 10);
       const accountId = res.locals.account_id;
       console.log(`View - Attempting to fetch message ID: ${messageId} for account ID: ${accountId}`);
-  
+
       const message = await messageModel.getMessageById(messageId, accountId);
       if (!message) {
         console.log(`View - Message not found or access denied for ID: ${messageId}`);
         req.flash("error", "Message not found or you don’t have access to it.");
         return res.redirect("/messages/inbox");
       }
-  
+
+      // Removed: Automatic mark as read
+      // console.log(`View - Marking message ID: ${messageId} as read`);
+      // await messageModel.updateReadStatus(messageId, accountId, true);
+
+      // Fetch navigation
       const nav = await utilities.getNav();
-  
+
       console.log(`View - Data passed:`, {
         title: message.message_subject,
         nav,
@@ -120,7 +124,7 @@ const messageController = {
         loggedIn: res.locals.loggedIn,
         unreadMessageCount: res.locals.unreadMessageCount
       });
-  
+
       res.render("messages/view", {
         title: message.message_subject,
         nav,
@@ -143,7 +147,7 @@ const messageController = {
 
   async archive(req, res, next) {
     try {
-      console.log("Archive - Full req.params:", req.params); // Add this line
+      console.log("Archive - Full req.params:", req.params);
       const messageIdRaw = req.params.message_id;
       console.log(`Archive - Raw message_id from params: "${messageIdRaw}"`);
       if (!messageIdRaw || isNaN(parseInt(messageIdRaw, 10))) {
@@ -190,6 +194,7 @@ const messageController = {
       res.redirect("/messages/inbox");
     }
   },
+
   async toggleRead(req, res, next) {
     try {
       const messageIdRaw = req.params.message_id;
@@ -202,7 +207,7 @@ const messageController = {
       const messageId = parseInt(messageIdRaw, 10);
       const accountId = res.locals.account_id;
       console.log(`ToggleRead - Toggling read status for message ID: ${messageId} for account ID: ${accountId}`);
-  
+
       // Get current message status
       const message = await messageModel.getMessageById(messageId, accountId);
       if (!message) {
@@ -210,7 +215,7 @@ const messageController = {
         req.flash("error", "Message not found or you don’t have access to it.");
         return res.redirect(`/messages/view/${messageId}`);
       }
-  
+
       // Toggle the read status
       const newStatus = !message.message_read; // Flip current status
       const result = await messageModel.updateReadStatus(messageId, accountId, newStatus);
